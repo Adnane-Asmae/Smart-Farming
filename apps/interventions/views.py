@@ -4,13 +4,15 @@ App Interventions - Views
 - Technicien : lecture des siennes + mise à jour statut/compte_rendu
 - Farmer : lecture des interventions sur ses parcelles
 """
-
 from rest_framework import generics, status
+from rest_framework.views import APIView  # ← ajoute cette ligne si elle manque
 from rest_framework.response import Response
+from django.http import HttpResponse
+from .utils import generer_rapport_technicien
+from apps.users.models import Utilisateur
 from smart_farming.permissions import IsAdmin, IsAdminOrTechnicien, IsAnyRole
 from .models import Intervention
 from .serializers import InterventionSerializer, InterventionUpdateStatutSerializer
-
 
 class InterventionListCreateView(generics.ListCreateAPIView):
     serializer_class = InterventionSerializer
@@ -76,3 +78,33 @@ class InterventionDetailView(generics.RetrieveUpdateDestroyAPIView):
         intervention = self.get_object()
         intervention.delete()
         return Response({'message': 'Intervention supprimée.'}, status=status.HTTP_204_NO_CONTENT)
+class RapportTechnicienPDFView(APIView):
+    """
+    GET /api/interventions/rapport/<technicien_id>/
+    Génère un PDF du rapport d'un technicien.
+    Admin uniquement.
+    """
+    permission_classes = [IsAdmin]
+
+    def get(self, request, technicien_id):
+        try:
+            technicien = Utilisateur.objects.get(
+                pk=technicien_id, role='TECHNICIEN'
+            )
+        except Utilisateur.DoesNotExist:
+            return Response(
+                {'error': 'Technicien introuvable.'},
+                status=404
+            )
+
+        interventions = Intervention.objects.filter(
+            technicien=technicien
+        ).select_related('parcelle', 'machine')
+
+        buffer = generer_rapport_technicien(technicien, interventions)
+
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = (
+            f'attachment; filename="rapport_{technicien.nom}_{technicien.prenom}.pdf"'
+        )
+        return response
