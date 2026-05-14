@@ -1,0 +1,124 @@
+.login-container {
+  min-height: 100vh !important;
+  min-width: 100vw !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background-image: url('https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1920&h=1080&fit=crop') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.login-card {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.login-title {
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.login-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 32px 0;
+  font-size: 14px;
+}
+
+.login-input {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #333;
+}
+
+.login-input .ant-input-prefix {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.login-input input {
+  background: transparent;
+  color: #333;
+}
+
+.login-input input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.login-input.ant-input-password {
+  border-radius: 12px;
+}
+
+.role-radio-group {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.role-radio-group .ant-radio-button-wrapper {
+  flex: 1;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+}
+
+.role-radio-group .ant-radio-button-wrapper-checked {
+  background: linear-gradient(135deg, #c4e64d 0%, #2e8b57 100%);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.remember-checkbox {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.remember-checkbox .ant-checkbox-inner {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.login-button {
+  background: linear-gradient(135deg, #c4e64d 0%, #2e8b57 100%);
+  border: none;
+  border-radius: 12px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #b8d943 0%, #267a4a 100%);
+  border: none;
+  color: white;
+}
+
+.signup-link {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.signup-link a {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+}
