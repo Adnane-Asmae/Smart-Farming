@@ -1,531 +1,1036 @@
-import { useState, useEffect } from 'react';
-import { Row, Col, Card, Button, Avatar, Input, Space, Badge, Tag, Statistic } from 'antd';
-import {
-  SearchOutlined,
-  BellOutlined,
-  MessageOutlined,
-  UserOutlined,
-  CheckCircleOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  FullscreenOutlined,
-  SwapOutlined,
+import { Card, Typography, Row, Col, Button, Progress, Tag, Table, Space } from 'antd';
+import { 
+  TeamOutlined, 
+  EnvironmentOutlined, 
+  TruckOutlined, 
+  ToolOutlined, 
+  FileTextOutlined,
   PlayCircleOutlined,
-  TeamOutlined,
-  EnvironmentOutlined,
-  ExperimentOutlined,
-  TruckOutlined,
-  ToolOutlined,
-  ClockCircleOutlined,
-  BarChartOutlined
+  PlusOutlined,
+  SettingOutlined,
+  CheckCircleOutlined,
+  FireOutlined,
+  CalendarOutlined,
+  ArrowUpOutlined,
+  WarningOutlined,
+  ExclamationCircleOutlined,
+  EditOutlined,
+  CheckOutlined,
+  CloudOutlined
 } from '@ant-design/icons';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell
-} from 'recharts';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import useAuthStore from '../stores/useAuthStore';
-import { useTranslation } from 'react-i18next';
+
+const { Title, Text, Paragraph } = Typography;
 
 const Dashboard = () => {
-  const user = useAuthStore((state) => state.user);
-  const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
+  const { user } = useAuthStore();
+  const userRole = user?.role || 'FARMER';
 
-  const rtlLanguages = ['ar', 'zgh'];
-
-  useEffect(() => {
-    setIsRTL(rtlLanguages.includes(i18n.language));
-  }, [i18n.language]);
-
-  const userRole = user?.role || 'Agronomist';
-
-  const getDashboardData = () => {
-    switch(userRole) {
-      case 'Admin':
-        return {
-          title: t('admin.title'),
-          subtitle: t('admin.subtitle'),
-          mainHero: {
-            title: t('admin.heroTitle'),
-            users: '156',
-            farms: '42',
-            todayActivities: '28',
-            pendingRequests: '12',
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop'
-          },
-          stats: [
-            { title: t('admin.totalUsers'), value: 156, icon: <TeamOutlined />, color: '#42a5f5' },
-            { title: t('admin.activeFarms'), value: 42, icon: <EnvironmentOutlined />, color: '#66bb6a' },
-            { title: t('admin.todayActivities'), value: 28, icon: <ToolOutlined />, color: '#ffa726' },
-            { title: t('admin.pendingRequests'), value: 12, icon: <ClockCircleOutlined />, color: '#ef5350' }
-          ],
-          fieldCards: [
-            { id: 1, title: t('admin.userManagement'), status: 'active', image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop' },
-            { id: 2, title: t('admin.farmMonitoring'), status: 'active', image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop' },
-            { id: 3, title: t('admin.systemSettings'), status: 'active', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop' },
-            { id: 4, title: t('admin.reportsAnalytics'), status: 'active', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop' }
-          ]
-        };
-      case 'Farmer':
-        return {
-          title: t('farmer.title'),
-          subtitle: t('farmer.subtitle'),
-          mainHero: {
-            title: t('farmer.heroTitle'),
-            area: '8.5 ha',
-            date: '07.10.2025',
-            time: '15:45',
-            temp: '24°C',
-            cropStage: t('farmer.cropStage'),
-            nextTask: t('farmer.nextTask'),
-            image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop'
-          },
-          stats: [
-            { title: t('farmer.myParcels'), value: 5, icon: <EnvironmentOutlined />, color: '#66bb6a' },
-            { title: t('farmer.cropsGrowing'), value: 3, icon: <ExperimentOutlined />, color: '#ffa726' },
-            { title: t('farmer.machines'), value: 2, icon: <TruckOutlined />, color: '#42a5f5' },
-            { title: t('farmer.pendingTasks'), value: 4, icon: <ToolOutlined />, color: '#ef5350' }
-          ],
-          fieldCards: [
-            { id: 1, title: t('farmer.fieldPreparation'), status: 'completed', image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop' },
-            { id: 2, title: t('farmer.planting'), status: 'completed', image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400&h=300&fit=crop' },
-            { id: 3, title: t('farmer.irrigation'), status: 'in progress', image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop' },
-            { id: 4, title: t('farmer.harvest'), status: 'pending', image: 'https://images.unsplash.com/photo-1523301343968-6a6ebf63c672?w=400&h=300&fit=crop' }
-          ]
-        };
-      default:
-        return {
-          title: t('agronomist.title'),
-          subtitle: t('agronomist.subtitle'),
-          mainHero: {
-            title: t('agronomist.heroTitle'),
-            area: '12 ha',
-            date: '07.10.2025',
-            time: '14:30',
-            temp: '20°C',
-            growth: '86%',
-            image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop'
-          },
-          stats: [
-            { title: t('agronomist.farmsAssigned'), value: 12, icon: <EnvironmentOutlined />, color: '#66bb6a' },
-            { title: t('agronomist.cropsAnalyzed'), value: 28, icon: <ExperimentOutlined />, color: '#42a5f5' },
-            { title: t('agronomist.recommendations'), value: 15, icon: <BarChartOutlined />, color: '#ffa726' },
-            { title: t('agronomist.interventions'), value: 8, icon: <ToolOutlined />, color: '#ef5350' }
-          ],
-          fieldCards: [
-            { id: 1, title: t('agronomist.fieldScanning'), status: 'completed', image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop' },
-            { id: 2, title: t('agronomist.smartSeeding'), status: 'completed', image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400&h=300&fit=crop' },
-            { id: 3, title: t('agronomist.cropMonitoring'), status: 'in progress', image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop' },
-            { id: 4, title: t('agronomist.irrigationTreatment'), status: 'pending', image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop' }
-          ]
-        };
-    }
-  };
-
-  const dashboardData = getDashboardData();
-
-  const growthData = [
-    { name: 'Seed', value: 45, label: '24h' },
-    { name: 'Final', value: 75, label: '48h' },
-    { name: 'Veg', value: 85, label: '1w' }
+  const waterData = [
+    { name: 'Lun', value: 2500 },
+    { name: 'Mar', value: 2200 },
+    { name: 'Mer', value: 2300 },
+    { name: 'Jeu', value: 2600 },
+    { name: 'Ven', value: 2000 },
+    { name: 'Sam', value: 2400 },
+    { name: 'Dim', value: 2250 },
   ];
 
-  const productionData = [
-    { month: 'JAN', current: 500, last: 400 },
-    { month: 'FEB', current: 1000, last: 800 },
-    { month: 'MAR', current: 1500, last: 1200 },
-    { month: 'APR', current: 1800, last: 1500 },
-    { month: 'MAY', current: 2200, last: 1800 },
-    { month: 'JUN', current: 2500, last: 2000 },
-    { month: 'JUL', current: 3500, last: 2800 },
-    { month: 'AUG', current: 4000, last: 3200 },
-    { month: 'SEP', current: 3800, last: 3000 },
-    { month: 'OCT', current: 2800, last: 2200 },
-    { month: 'NOV', current: 1800, last: 1500 },
-    { month: 'DEC', current: 2000, last: 1600 },
+  const interventionsData = [
+    { name: 'Jan', value: 12 },
+    { name: 'Fév', value: 18 },
+    { name: 'Mar', value: 14 },
+    { name: 'Avr', value: 25 },
+    { name: 'Mai', value: 21 },
   ];
 
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'completed': case 'active': return 'success';
-      case 'in progress': return 'warning';
-      case 'pending': return 'default';
-      default: return 'default';
-    }
+  const cropsData = [
+    { name: 'Blé', value: 35 },
+    { name: 'Orge', value: 20 },
+    { name: 'Tomates', value: 30 },
+    { name: 'Oliviers', value: 15 },
+  ];
+
+  const weeklyInterventions = [
+    { name: 'Mon', value: 7 },
+    { name: 'Tue', value: 5 },
+    { name: 'Wed', value: 8 },
+    { name: 'Thu', value: 6 },
+    { name: 'Fri', value: 9 },
+    { name: 'Sat', value: 4 },
+    { name: 'Sun', value: 3 },
+  ];
+
+  const irrigationLevels = [
+    { time: '6AM', value: 65 },
+    { time: '9AM', value: 58 },
+    { time: '12PM', value: 45 },
+    { time: '3PM', value: 38 },
+    { time: '6PM', value: 52 },
+    { time: '9PM', value: 60 },
+  ];
+
+  const recentInterventions = [
+    { id: 'INT-2024-145', type: 'Pest Control', parcelle: 'Parcelle A-12', culture: 'Tomates', status: 'In Progress', priority: 'High', date: '2024-05-15' },
+    { id: 'INT-2024-143', type: 'Fertilization', parcelle: 'Parcelle B-5', culture: 'Blé', status: 'To Do', priority: 'Medium', date: '2024-05-16' },
+    { id: 'INT-2024-141', type: 'Soil Testing', parcelle: 'Parcelle C-8', culture: 'Maïs', status: 'To Do', priority: 'Low', date: '2024-05-18' },
+    { id: 'INT-2024-139', type: 'Harvesting', parcelle: 'Parcelle D-3', culture: 'Laitue', status: 'Completed', priority: 'High', date: '2024-05-13' },
+  ];
+
+  const COLORS = ['#4a7c59', '#66bb6a', '#81c784', '#a5d6a7'];
+
+  const getPriorityTag = (priority) => {
+    const colors = {
+      'High': '#fee2e2',
+      'Medium': '#fff7ed',
+      'Low': '#d1fae5'
+    };
+    const textColors = {
+      'High': '#dc2626',
+      'Medium': '#ea580c',
+      'Low': '#059669'
+    };
+    return (
+      <Tag color={colors[priority]} style={{ border: 'none' }}>
+        <span style={{ color: textColors[priority], fontWeight: 500 }}>{priority}</span>
+      </Tag>
+    );
   };
 
-  const getStatusText = (status) => {
-    switch(status) {
-      case 'completed': return t('status.completed');
-      case 'in progress': return t('status.inProgress');
-      case 'pending': return t('status.pending');
-      case 'active': return t('status.active');
-      default: return status;
-    }
+  const getStatusTag = (status) => {
+    const colors = {
+      'In Progress': '#dbeafe',
+      'To Do': '#f3f4f6',
+      'Completed': '#d1fae5'
+    };
+    const textColors = {
+      'In Progress': '#2563eb',
+      'To Do': '#6b7280',
+      'Completed': '#059669'
+    };
+    return (
+      <Tag color={colors[status]} style={{ border: 'none' }}>
+        <span style={{ color: textColors[status], fontWeight: 500 }}>{status}</span>
+      </Tag>
+    );
   };
 
-  return (
-    <div style={{ background: '#f0fdf4', minHeight: '100vh' }}>
-      <Card style={{ borderRadius: '24px', background: '#f8fffc', border: 'none' }} styles={{ body: { padding: '24px' } }}>
-        <Row align="middle" justify="space-between" style={{ marginBottom: '28px', flexDirection: isRTL ? 'row-reverse' : 'row' }}>
-          <Col>
-            <Space size="middle" style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
-              <div style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: userRole === 'Admin' 
-                  ? 'linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%)' 
-                  : userRole === 'Farmer' 
-                  ? 'linear-gradient(135deg, #ffa726 0%, #f57c00 100%)' 
-                  : 'linear-gradient(135deg, #66bb6a 0%, #43a047 100%)',
-                display: 'flex',
-                alignItems: 'center',
+  const renderAdminDashboard = () => (
+    <>
+      <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
+        Admin Dashboard
+      </Title>
+      <Paragraph type="secondary" style={{ marginBottom: 32 }}>
+        Complete overview of the SmartFarm platform
+      </Paragraph>
+
+      {/* Stats Cards */}
+      <Row gutter={[24, 24]} style={{ marginBottom: 32 }}>
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Total Farmers
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  156
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#4a7c59' }}>↑ +12</span> this month
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#4a7c59', 
+                display: 'flex', 
+                alignItems: 'center', 
                 justifyContent: 'center'
               }}>
-                {userRole === 'Admin' ? <TeamOutlined /> : userRole === 'Farmer' ? <EnvironmentOutlined /> : <ExperimentOutlined />}
+                <TeamOutlined style={{ fontSize: 28, color: '#fff' }} />
               </div>
-              <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                <span style={{ fontSize: '18px', fontWeight: 700, color: '#2c3e50' }}>
-                  {dashboardData.title}
-                </span>
-                <p style={{ margin: 0, fontSize: '12px', color: '#95a5a6' }}>
-                  {dashboardData.subtitle}
-                </p>
-              </div>
-            </Space>
-          </Col>
-          
-          <Col xs={24} sm={12} md={6}>
-            <Input
-              placeholder={t('common.search')}
-              prefix={<SearchOutlined style={{ color: '#94a3b8' }} />}
-              style={{
-                borderRadius: '30px',
-                height: '48px',
-                border: 'none',
-                background: '#ffffff',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                paddingLeft: '16px'
-              }}
-            />
-          </Col>
-          
-          <Col>
-            <Space size="large" align="center" style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
-              <Button type="text" style={{ borderRadius: '50%', width: '44px', height: '44px' }}>
-                <Badge count={3} size="small">
-                  <BellOutlined style={{ fontSize: '20px', color: '#64748b' }} />
-                </Badge>
-              </Button>
-              <Button type="text" style={{ borderRadius: '50%', width: '44px', height: '44px' }}>
-                <MessageOutlined style={{ fontSize: '20px', color: '#64748b' }} />
-              </Button>
-              <Space align="center" size="middle">
-                <Avatar 
-                  size={48} 
-                  icon={<UserOutlined />}
-                />
-                <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                  <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '16px' }}>
-                    {user?.first_name || user?.prenom || t('common.defaultFirstName')} {user?.last_name || user?.nom || t('common.defaultLastName')}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                    {t(`common.${userRole.toLowerCase()}`)}
-                  </div>
-                </div>
-                <CheckCircleOutlined style={{ color: '#22c55e', fontSize: '18px' }} />
-              </Space>
-            </Space>
-          </Col>
-        </Row>
+            </div>
+          </Card>
+        </Col>
 
-        <Row gutter={[16, 16]} style={{ marginBottom: '28px' }}>
-          {dashboardData.stats.map((stat, index) => (
-            <Col key={index} xs={24} sm={12} md={6}>
-              <Card style={{ borderRadius: '16px', border: 'none' }}>
-                <Statistic
-                  title={stat.title}
-                  value={stat.value}
-                  prefix={
-                    <div style={{ 
-                      width: '36px', 
-                      height: '36px', 
-                      borderRadius: '10px',
-                      background: `${stat.color}20`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: stat.color,
-                      fontSize: '18px'
-                    }}>
-                      {stat.icon}
-                    </div>
-                  }
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Total Technicians
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  24
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#4a7c59' }}>↑ +3</span> this month
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#2385bb', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <TeamOutlined style={{ fontSize: 28, color: '#fff' }} />
+              </div>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Total Parcels
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  342
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#4a7c59' }}>↑ +8</span> this month
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#2d5a3d', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <EnvironmentOutlined style={{ fontSize: 28, color: '#fff' }} />
+              </div>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Total Machines
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  87
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#c43a31' }}>5</span> in maintenance
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#f59e0b', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <TruckOutlined style={{ fontSize: 28, color: '#fff' }} />
+              </div>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Active Interventions
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  45
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#4a7c59' }}>↑ 18</span> completed
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#4a7c59', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <ToolOutlined style={{ fontSize: 28, color: '#fff' }} />
+              </div>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={8}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
+                  Pending Requests
+                </Text>
+                <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
+                  12
+                </Title>
+                <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
+                  <span style={{ color: '#c43a31' }}>↓ +5</span> today
+                </Text>
+              </div>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: 12, 
+                background: '#c43a31', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <FileTextOutlined style={{ fontSize: 28, color: '#fff' }} />
+              </div>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Quick Actions */}
+      <Title level={4} style={{ marginBottom: 24, color: '#1a1a1a' }}>
+        Quick Actions
+      </Title>
+      <Row gutter={[24, 24]} style={{ marginBottom: 40 }}>
+        <Col xs={24} sm={12} md={6}>
+          <Button 
+            type="primary" 
+            block 
+            size="large"
+            icon={<PlayCircleOutlined />}
+            style={{ 
+              height: 100, 
+              background: '#4a7c59', 
+              border: 'none', 
+              borderRadius: 10, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: 14,
+              fontWeight: 600,
+              boxShadow: '0 4px 12px rgba(74, 124, 89, 0.2)'
+            }}
+          >
+            <PlayCircleOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+            Start Irrigation
+          </Button>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Button 
+            block 
+            size="large"
+            icon={<PlusOutlined />}
+            style={{ 
+              height: 100, 
+              background: '#2d5a3d', 
+              border: 'none', 
+              borderRadius: 10, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#fff'
+            }}
+          >
+            <PlusOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+            Add Sensor
+          </Button>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Button 
+            block 
+            size="large"
+            icon={<FileTextOutlined />}
+            style={{ 
+              height: 100, 
+              background: '#2385bb', 
+              border: 'none', 
+              borderRadius: 10, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#fff'
+            }}
+          >
+            <FileTextOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+            Generate Report
+          </Button>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Button 
+            block 
+            size="large"
+            icon={<SettingOutlined />}
+            style={{ 
+              height: 100, 
+              background: '#555f53', 
+              border: 'none', 
+              borderRadius: 10, 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: 14,
+              fontWeight: 600,
+              color: '#fff'
+            }}
+          >
+            <SettingOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+            Configuration
+          </Button>
+        </Col>
+      </Row>
+
+      {/* Charts Section */}
+      <Title level={4} style={{ marginBottom: 24, color: '#1a1a1a' }}>
+        Analytics and Statistics
+      </Title>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Water Consumption (Last 7 days)</span>}
+          >
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={waterData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={{ 
+                    borderRadius: 8, 
+                    border: 'none', 
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
+                  }} 
                 />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#4a7c59" 
+                  strokeWidth={3} 
+                  fill="url(#colorWater)"
+                />
+                <defs>
+                  <linearGradient id="colorWater" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4a7c59" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#4a7c59" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Monthly Interventions</span>}
+          >
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={interventionsData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={{ 
+                    borderRadius: 8, 
+                    border: 'none', 
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
+                  }} 
+                />
+                <Bar dataKey="value" fill="#4a7c59" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Crops Distribution</span>}
+          >
+            <Row gutter={[24, 24]} align="middle">
+              <Col xs={24} sm={12}>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={cropsData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {cropsData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        borderRadius: 8, 
+                        border: 'none', 
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
+                      }} 
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Col>
+              <Col xs={24} sm={12}>
+                {cropsData.map((entry, index) => (
+                  <div 
+                    key={index} 
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      marginBottom: 12 
+                    }}
+                  >
+                    <div 
+                      style={{ 
+                        width: 12, 
+                        height: 12, 
+                        borderRadius: 6, 
+                        background: COLORS[index % COLORS.length],
+                        marginRight: 12
+                      }} 
+                    />
+                    <Text style={{ fontSize: 14, color: '#1a1a1a', fontWeight: 500 }}>
+                      {entry.name} {entry.value}%
+                    </Text>
+                  </div>
+                ))}
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Quick Statistics</span>}
+          >
+            <div style={{ marginBottom: 24 }}>
+              <Text type="secondary" style={{ fontSize: 13 }}>Crop success rate</Text>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Crop success rate</Text>
+                <Text style={{ fontSize: 18, color: '#4a7c59', fontWeight: 700 }}>94%</Text>
+              </div>
+              <Progress percent={94} strokeColor="#4a7c59" showInfo={false} style={{ marginTop: 12 }} />
+            </div>
+            <div style={{ marginBottom: 24 }}>
+              <Text type="secondary" style={{ fontSize: 13 }}>Irrigation efficiency</Text>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Irrigation efficiency</Text>
+                <Text style={{ fontSize: 18, color: '#2385bb', fontWeight: 700 }}>88%</Text>
+              </div>
+              <Progress percent={88} strokeColor="#2385bb" showInfo={false} style={{ marginTop: 12 }} />
+            </div>
+            <div>
+              <Text type="secondary" style={{ fontSize: 13 }}>Machine utilization</Text>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Machine utilization</Text>
+                <Text style={{ fontSize: 18, color: '#f59e0b', fontWeight: 700 }}>76%</Text>
+              </div>
+              <Progress percent={76} strokeColor="#f59e0b" showInfo={false} style={{ marginTop: 12 }} />
+            </div>
+          </Card>
+        </Col>
+      </Row>
+    </>
+  );
+
+  const renderTechnicianDashboard = () => (
+    <>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
+            Dashboard Overview
+          </Title>
+          <Paragraph type="secondary" style={{ margin: 0, fontSize: 15 }}>
+            Welcome back, Ahmed! Here's what's happening with your tasks.
+          </Paragraph>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <CalendarOutlined style={{ color: '#667085', fontSize: 18 }} />
+          <Text style={{ fontSize: 15, color: '#667085' }}>Thursday, May 14, 2026</Text>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12} md={6}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
+                Assigned Interventions
+              </Text>
+              <div style={{ 
+                width: 40, 
+                height: 40, 
+                borderRadius: 20, 
+                background: '#eff6ff', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <FileTextOutlined style={{ fontSize: 18, color: '#2563eb' }} />
+              </div>
+            </div>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>
+              12
+            </Title>
+            <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
+              <span style={{ color: '#2563eb' }}>+3</span> this week
+            </Text>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} md={6}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
+                Completed Interventions
+              </Text>
+              <div style={{ 
+                width: 40, 
+                height: 40, 
+                borderRadius: 20, 
+                background: '#d1fae5', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <CheckCircleOutlined style={{ fontSize: 18, color: '#059669' }} />
+              </div>
+            </div>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>
+              47
+            </Title>
+            <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
+              <span style={{ color: '#059669' }}>98%</span> completion rate
+            </Text>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} md={6}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
+                Machines Operational
+              </Text>
+              <div style={{ 
+                width: 40, 
+                height: 40, 
+                borderRadius: 20, 
+                background: '#fff7ed', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <TruckOutlined style={{ fontSize: 18, color: '#ea580c' }} />
+              </div>
+            </div>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>
+              8/10
+            </Title>
+            <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
+              2 under maintenance
+            </Text>
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} md={6}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
+                Irrigation Alerts
+              </Text>
+              <div style={{ 
+                width: 40, 
+                height: 40, 
+                borderRadius: 20, 
+                background: '#fee2e2', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center'
+              }}>
+                <FireOutlined style={{ fontSize: 18, color: '#dc2626' }} />
+              </div>
+            </div>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>
+              5
+            </Title>
+            <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
+              Requires attention
+            </Text>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Charts */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <ArrowUpOutlined style={{ color: '#4a7c59' }} />
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Weekly Interventions</span>
+              </div>
+            }
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={weeklyInterventions}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={{ 
+                    borderRadius: 8, 
+                    border: 'none', 
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
+                  }} 
+                />
+                <Bar dataKey="value" fill="#4a7c59" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CloudOutlined style={{ color: '#2563eb' }} />
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Irrigation Levels (Today)</span>
+              </div>
+            }
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={irrigationLevels}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8e0" />
+                <XAxis dataKey="time" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip 
+                  contentStyle={{ 
+                    borderRadius: 8, 
+                    border: 'none', 
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
+                  }} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#2563eb" 
+                  strokeWidth={3}
+                  dot={{ r: 6, fill: '#2563eb' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Recent Interventions */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={16}>
+          <Card 
+            style={{ 
+              borderRadius: 12, 
+              border: '1px solid #e2e8e0',
+              boxShadow: 'none'
+            }}
+            title={
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Recent Interventions</span>
+                <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#2563eb' }}>View All</Button>
+              </div>
+            }
+          >
+            <Table
+              dataSource={recentInterventions}
+              pagination={false}
+              showHeader
+              columns={[
+                {
+                  title: 'ID',
+                  dataIndex: 'id',
+                  key: 'id',
+                  render: (id) => <Text style={{ fontWeight: 600, color: '#667085' }}>{id}</Text>
+                },
+                {
+                  title: 'Intervention',
+                  dataIndex: 'type',
+                  key: 'type',
+                },
+                {
+                  title: 'Parcel / Crop',
+                  dataIndex: 'parcelle',
+                  key: 'parcelle',
+                  render: (parcelle, record) => (
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <EnvironmentOutlined style={{ color: '#667085' }} />
+                        <Text style={{ fontWeight: 500 }}>{parcelle}</Text>
+                      </div>
+                      <Text type="secondary" style={{ fontSize: 13, marginLeft: 24 }}>{record.culture}</Text>
+                    </div>
+                  )
+                },
+                {
+                  title: 'Status',
+                  dataIndex: 'status',
+                  key: 'status',
+                  render: getStatusTag
+                },
+                {
+                  title: 'Priority',
+                  dataIndex: 'priority',
+                  key: 'priority',
+                  render: getPriorityTag
+                },
+                {
+                  title: 'Due Date',
+                  dataIndex: 'date',
+                  key: 'date',
+                },
+                {
+                  title: 'Action',
+                  key: 'action',
+                  render: () => <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a' }}>View</Button>
+                }
+              ]}
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={8}>
+          <Row gutter={[16, 16]}>
+            <Col xs={24}>
+              <Card 
+                style={{ 
+                  borderRadius: 12, 
+                  border: '1px solid #e2e8e0',
+                  boxShadow: 'none'
+                }}
+                title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Quick Actions</span>}
+              >
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <Button 
+                    block 
+                    style={{ 
+                      height: 48, 
+                      border: '1px solid #e2e8e0', 
+                      borderRadius: 10,
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'flex-start',
+                      gap: 12,
+                      color: '#1a1a1a',
+                      fontWeight: 500
+                    }}
+                  >
+                    <FileTextOutlined />
+                    Add Field Observation
+                  </Button>
+                  <Button 
+                    block 
+                    style={{ 
+                      height: 48, 
+                      border: '1px solid #e2e8e0', 
+                      borderRadius: 10,
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'flex-start',
+                      gap: 12,
+                      color: '#1a1a1a',
+                      fontWeight: 500
+                    }}
+                  >
+                    <TruckOutlined />
+                    Report Machine Issue
+                  </Button>
+                  <Button 
+                    block 
+                    style={{ 
+                      height: 48, 
+                      border: '1px solid #e2e8e0', 
+                      borderRadius: 10,
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'flex-start',
+                      gap: 12,
+                      color: '#1a1a1a',
+                      fontWeight: 500
+                    }}
+                  >
+                    <FireOutlined />
+                    Update Irrigation Status
+                  </Button>
+                </Space>
               </Card>
             </Col>
-          ))}
-        </Row>
 
-        <Row gutter={[16, 16]} style={{ marginBottom: '28px' }}>
-          <Col xs={24} md={8}>
-            <Card 
-              style={{ borderRadius: '16px', border: 'none', height: '100%' }}
-              styles={{ body: { padding: '20px' } }}
-            >
-              <div style={{ marginBottom: '8px', fontSize: '14px', color: '#667085', fontWeight: 500 }}>
-                {userRole === 'Admin' ? t('admin.systemActivity') : t('agronomist.growthRate')}
-              </div>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: '#101828', marginBottom: '4px' }}>
-                {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
-              </div>
-              <div style={{ fontSize: '13px', color: '#98a2b3', marginBottom: '16px' }}>
-                ({new Date().toLocaleDateString()})
-              </div>
-              
-              <Row align="middle" gutter={16}>
-                <Col>
-                  <div style={{ fontSize: '40px', fontWeight: 800, color: '#101828' }}>
-                    {dashboardData.mainHero.temp || '25°c'}
+            <Col xs={24}>
+              <Card 
+                style={{ 
+                  borderRadius: 12, 
+                  border: '1px solid #e2e8e0',
+                  boxShadow: 'none'
+                }}
+                title={
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <WarningOutlined style={{ color: '#ea580c' }} />
+                    <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Active Alerts</span>
                   </div>
-                </Col>
-                <Col flex="auto">
-                  <div style={{
-                    width: '120px',
-                    height: '120px',
-                    borderRadius: '50%',
-                    background: `conic-gradient(${dashboardData.mainHero.growth ? '#22c55e' : '#42a5f5'} 0 ${dashboardData.mainHero.growth || 62}%, #e2e8f0 ${dashboardData.mainHero.growth || 62}% 100%)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <div style={{
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      background: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexDirection: 'column'
-                    }}>
-                      <span style={{ fontSize: '18px', fontWeight: 700, color: '#101828' }}>
-                        {dashboardData.mainHero.growth ? `${dashboardData.mainHero.growth}%` : '25°c'}
-                      </span>
-                      <span style={{ fontSize: '11px', color: '#98a2b3' }}>
-                        {dashboardData.mainHero.growth ? t('agronomist.growth') : 'Room temp'}
-                      </span>
+                }
+              >
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <div style={{ background: '#fee2e2', padding: 16, borderRadius: 10, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <FireOutlined style={{ color: '#dc2626', fontSize: 24 }} />
+                    <div>
+                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#991b1b' }}>Critical: Irrigation System</Text>
+                      <br/>
+                      <Text type="secondary" style={{ fontSize: 13, color: '#991b1b' }}>Parcel A-12 water pressure low - requires immediate attention</Text>
                     </div>
                   </div>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-          
-          <Col xs={24} md={10}>
-            <Card 
-              style={{ borderRadius: '16px', border: 'none', height: '100%' }}
-              styles={{ body: { padding: '20px' } }}
-            >
-              <Row align="middle" justify="space-between" style={{ marginBottom: '16px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#101828' }}>
-                  {userRole === 'Admin' ? t('admin.systemActivity') : t('agronomist.growthRate')}
-                </span>
-                <Tag color="green" style={{ borderRadius: '12px', fontSize: '11px', background: '#dcfce7', color: '#166534' }}>
-                  {t('common.weekly')}
-                </Tag>
-              </Row>
-              
-              <div style={{ height: '160px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={growthData}>
-                    <CartesianGrid vertical={false} stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 11, fill: '#98a2b3' }}
-                      tickFormatter={(value, index) => growthData[index].label}
-                    />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke={userRole === 'Admin' ? '#42a5f5' : userRole === 'Farmer' ? '#ffa726' : '#22c55e'}
-                      strokeWidth={3}
-                      dot={{ r: 6, fill: '#ffffff', strokeWidth: 3, stroke: userRole === 'Admin' ? '#42a5f5' : userRole === 'Farmer' ? '#ffa726' : '#22c55e' }}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-          </Col>
-          
-          <Col xs={24} md={6}>
-            <Card 
-              style={{ borderRadius: '16px', border: 'none', height: '100%', overflow: 'hidden' }}
-              styles={{ body: { padding: 0 } }}
-            >
-              <img 
-                src={dashboardData.mainHero.image}
-                alt={dashboardData.mainHero.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </Card>
-          </Col>
-        </Row>
-
-        <Row gutter={[16, 16]}>
-          <Col xs={24} lg={16}>
-            <Row align="middle" justify="space-between" style={{ marginBottom: '16px' }}>
-              <span style={{ fontSize: '20px', fontWeight: 700, color: '#101828' }}>
-                {t('common.summary')}
-              </span>
-              <Space>
-                <Button type="text" icon={<SwapOutlined style={{ color: '#98a2b3' }} />} />
-                <Button type="text" icon={<FullscreenOutlined style={{ color: '#98a2b3' }} />} />
-              </Space>
-            </Row>
-            
-            <Card style={{ borderRadius: '16px', border: 'none' }} styles={{ body: { padding: '24px' } }}>
-              <div style={{ marginBottom: '16px' }}>
-                <Space size="large">
-                  <span style={{ fontSize: '13px', color: '#98a2b3' }}>{t('common.comparingLastYear')}</span>
-                  <Space size="middle">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
-                      <span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#c6ff50' }}></span>
-                      {t('common.currentYear')}
-                    </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px' }}>
-                      <span style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#1a5e3d' }}></span>
-                      {t('common.lastYear')}
-                    </span>
-                  </Space>
-                </Space>
-              </div>
-              
-              <div style={{ height: '320px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={productionData}>
-                    <CartesianGrid vertical={false} stroke="#f0f0f0" />
-                    <XAxis 
-                      dataKey="month" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 11, fill: '#98a2b3' }}
-                    />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 11, fill: '#98a2b3' }}
-                    />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                    />
-                    <Bar dataKey="last" barSize={20} radius={[8, 8, 0, 0]}>
-                      {productionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill="#1a5e3d" />
-                      ))}
-                    </Bar>
-                    <Bar dataKey="current" barSize={20} radius={[8, 8, 0, 0]}>
-                      {productionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill="#c6ff50" />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
-                {dashboardData.fieldCards.map((field) => (
-                  <Col key={field.id} xs={24} sm={12} md={6}>
-                    <Card
-                      hoverable
-                      style={{ borderRadius: '16px', border: 'none' }}
-                      styles={{ body: { padding: 0 } }}
-                    >
-                      <img 
-                        src={field.image}
-                        alt={field.title}
-                        style={{ 
-                          width: '100%', 
-                          height: '140px', 
-                          objectFit: 'cover',
-                          borderRadius: '16px 16px 0 0'
-                        }}
-                      />
-                      <div style={{ padding: '16px' }}>
-                        <div style={{ 
-                          fontSize: '14px', 
-                          fontWeight: 600, 
-                          color: '#2c3e50',
-                          marginBottom: '8px'
-                        }}>
-                          {field.title}
-                        </div>
-                        <Tag color={getStatusColor(field.status)} style={{ 
-                          fontSize: '11px',
-                          borderRadius: '12px',
-                          padding: '2px 10px'
-                        }}>
-                          {getStatusText(field.status)}
-                        </Tag>
-                      </div>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            </Card>
-          </Col>
-          
-          <Col xs={24} lg={8}>
-            <Card style={{ borderRadius: '20px', border: 'none', background: '#4a7c59' }} styles={{ body: { padding: 0 } }}>
-              <img 
-                src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=vertical%20farming%20hydroponics%20system%20with%20scientist%20flat%20design&image_size=portrait_4_3"
-                alt="Vertical Harvest"
-                style={{ width: '100%', borderRadius: '20px 20px 0 0' }}
-              />
-              <div style={{ padding: '24px', color: '#ffffff' }}>
-                <div style={{ fontSize: '24px', fontWeight: 800, marginBottom: '8px' }}>
-                  {dashboardData.mainHero.title}
-                </div>
-                
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.1)', 
-                  borderRadius: '20px', 
-                  padding: '8px 16px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '12px',
-                  marginBottom: '16px'
-                }}>
-                  <PlayCircleOutlined style={{ fontSize: '32px' }} />
-                  <div style={{ flex: 1, height: '4px', background: 'rgba(255,255,255,0.2)', borderRadius: '2px' }}>
-                    <div style={{ width: '50%', height: '100%', background: '#ffffff', borderRadius: '2px' }}></div>
+                  <div style={{ background: '#fff7ed', padding: 16, borderRadius: 10, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <TruckOutlined style={{ color: '#ea580c', fontSize: 24 }} />
+                    <div>
+                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#9a3412' }}>Warning: Equipment Maintenance</Text>
+                      <br/>
+                      <Text type="secondary" style={{ fontSize: 13, color: '#9a3412' }}>Tractor T-03 scheduled maintenance overdue by 3 days</Text>
+                    </div>
                   </div>
-                </div>
-                
-                <Row justify="space-between" style={{ fontSize: '13px', opacity: 0.8 }}>
-                  <span>18:50</span>
-                  <span>36:00</span>
-                </Row>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-      </Card>
+                </Space>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
+  );
+
+  return (
+    <div style={{ padding: '24px', background: '#f9fafb', minHeight: '100vh' }}>
+      {(userRole === 'ADMIN') ? renderAdminDashboard() : renderTechnicianDashboard()}
     </div>
   );
 };

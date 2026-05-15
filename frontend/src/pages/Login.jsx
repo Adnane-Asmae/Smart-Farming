@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, message, Checkbox, Radio, Row, Col } from 'antd';
+import { Form, Input, Button, message, Checkbox, Radio } from 'antd';
 import { UserOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../api';
@@ -15,9 +15,8 @@ const Login = () => {
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
 
-  const rtlLanguages = ['ar', 'zgh'];
-
   useEffect(() => {
+    const rtlLanguages = ['ar', 'zgh'];
     setIsRTL(rtlLanguages.includes(i18n.language));
   }, [i18n.language]);
 
@@ -88,7 +87,7 @@ const Login = () => {
               className="role-radio-group"
             >
               <Radio.Button value="ADMIN">{t('common.admin').toUpperCase()}</Radio.Button>
-              <Radio.Button value="TECHNICIEN">{t('common.technician').toUpperCase()}</Radio.Button>
+              <Radio.Button value="TECHNICIEN">{t('common.agronomist').toUpperCase()}</Radio.Button>
               <Radio.Button value="FARMER">{t('common.farmer').toUpperCase()}</Radio.Button>
             </Radio.Group>
           </Form.Item>

@@ -66,6 +66,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """JWT enrichi avec les infos user."""
     def validate(self, attrs):
         data = super().validate(attrs)
+        
+        # Vérifier le statut personnalisé de l'utilisateur
+        if not self.user.statut:
+            from rest_framework.exceptions import AuthenticationFailed
+            raise AuthenticationFailed("Ce compte est désactivé.")
+        
         data['user'] = {
             'id': self.user.id,
             'email': self.user.email,

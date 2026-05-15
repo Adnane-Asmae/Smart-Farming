@@ -1,4 +1,4 @@
-import { Layout, Menu, Avatar, Dropdown, Button, Space } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Button, Space, Modal } from 'antd';
 import {
   DashboardOutlined,
   UserOutlined,
@@ -9,7 +9,11 @@ import {
   FileTextOutlined,
   ThunderboltOutlined,
   LogoutOutlined,
-  PlusOutlined
+  PlusOutlined,
+  TeamOutlined,
+  SettingOutlined,
+  BarChartOutlined,
+  HistoryOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import useAuthStore from '../stores/useAuthStore';
@@ -17,6 +21,11 @@ import { logout } from '../api';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useEffect, useState } from 'react';
+import Users from '../pages/Users';
+import Parcelles from '../pages/Parcelles';
+import Cultures from '../pages/Cultures';
+import Machines from '../pages/Machines';
+import Interventions from '../pages/Interventions';
 
 const { Header, Sider, Content } = Layout;
 
@@ -26,6 +35,8 @@ const MainLayout = () => {
   const { user } = useAuthStore();
   const { t, i18n } = useTranslation();
   const [isRTL, setIsRTL] = useState(false);
+  const [addModalType, setAddModalType] = useState(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
 
   const rtlLanguages = ['ar', 'zgh'];
 
@@ -38,43 +49,156 @@ const MainLayout = () => {
     navigate('/login');
   };
 
-  const menuItems = [
-    {
-      key: '/dashboard',
-      icon: <DashboardOutlined />,
-      label: t('common.dashboard'),
-    },
-    {
-      key: '/parcelles',
-      icon: <EnvironmentOutlined />,
-      label: t('common.parcelles'),
-    },
-    {
-      key: '/cultures',
-      icon: <ExperimentOutlined />,
-      label: t('common.cultures'),
-    },
-    {
-      key: '/machines',
-      icon: <TruckOutlined />,
-      label: t('common.machines'),
-    },
-    {
-      key: '/interventions',
-      icon: <ToolOutlined />,
-      label: t('common.interventions'),
-    },
-    {
-      key: '/demandes',
-      icon: <FileTextOutlined />,
-      label: t('common.demandes'),
-    },
-    {
-      key: '/irrigation',
-      icon: <ThunderboltOutlined />,
-      label: t('common.irrigation'),
-    },
-  ];
+  const userRole = user?.role || 'FARMER';
+
+  // ─── Menus spécifiques par rôle ─────────────────────────────────────────────
+  const getMenuItems = () => {
+    const commonItems = [
+      {
+        key: '/dashboard',
+        icon: <DashboardOutlined />,
+        label: 'Dashboard',
+      }
+    ];
+
+    switch(userRole) {
+      case 'ADMIN':
+        return [
+          ...commonItems,
+          {
+            key: '/users',
+            icon: <TeamOutlined />,
+            label: 'Gestion utilisateurs',
+          },
+          {
+            key: '/parcelles',
+            icon: <EnvironmentOutlined />,
+            label: t('common.parcelles'),
+          },
+          {
+            key: '/cultures',
+            icon: <ExperimentOutlined />,
+            label: t('common.cultures'),
+          },
+          {
+            key: '/machines',
+            icon: <TruckOutlined />,
+            label: t('common.machines'),
+          },
+          {
+            key: '/interventions',
+            icon: <ToolOutlined />,
+            label: t('common.interventions'),
+          },
+          {
+            key: '/demandes',
+            icon: <FileTextOutlined />,
+            label: t('common.demandes'),
+          },
+          {
+            key: '/irrigation',
+            icon: <ThunderboltOutlined />,
+            label: t('common.irrigation'),
+          },
+          {
+            key: '/settings',
+            icon: <SettingOutlined />,
+            label: 'Paramètres système',
+          },
+          {
+            key: '/reports',
+            icon: <BarChartOutlined />,
+            label: 'Rapports',
+          },
+        ];
+      
+      case 'FARMER':
+        return [
+          ...commonItems,
+          {
+            key: '/parcelles',
+            icon: <EnvironmentOutlined />,
+            label: t('common.parcelles'),
+          },
+          {
+            key: '/cultures',
+            icon: <ExperimentOutlined />,
+            label: t('common.cultures'),
+          },
+          {
+            key: '/machines',
+            icon: <TruckOutlined />,
+            label: t('common.machines'),
+          },
+          {
+            key: '/interventions',
+            icon: <ToolOutlined />,
+            label: t('common.interventions'),
+          },
+          {
+            key: '/demandes',
+            icon: <FileTextOutlined />,
+            label: t('common.demandes'),
+          },
+          {
+            key: '/irrigation',
+            icon: <ThunderboltOutlined />,
+            label: t('common.irrigation'),
+          },
+        ];
+      
+      case 'TECHNICIEN':
+      case 'Agronomist':
+        return [
+          ...commonItems,
+          {
+            key: '/interventions',
+            icon: <FileTextOutlined />,
+            label: 'My Interventions',
+          },
+          {
+            key: '/parcelles',
+            icon: <EnvironmentOutlined />,
+            label: 'Parcels',
+          },
+          {
+            key: '/cultures',
+            icon: <ExperimentOutlined />,
+            label: 'Crops',
+          },
+          {
+            key: '/irrigation',
+            icon: <ThunderboltOutlined />,
+            label: 'Irrigation',
+          },
+          {
+            key: '/machines',
+            icon: <TruckOutlined />,
+            label: 'Machines',
+          },
+          {
+            key: '/history',
+            icon: <HistoryOutlined />,
+            label: 'History',
+          },
+          {
+            key: '/reports',
+            icon: <BarChartOutlined />,
+            label: 'Reports',
+          },
+          {
+            key: '/profile',
+            icon: <UserOutlined />,
+            label: 'Profile',
+          },
+        ];
+      
+      default:
+        return commonItems;
+    }
+  };
+
+  const menuItems = getMenuItems();
 
   const userMenu = {
     items: [
@@ -82,6 +206,7 @@ const MainLayout = () => {
         key: '1',
         label: t('common.myProfile'),
         icon: <UserOutlined />,
+        onClick: () => navigate('/profile'),
       },
       {
         type: 'divider',
@@ -94,6 +219,11 @@ const MainLayout = () => {
         danger: true,
       },
     ],
+  };
+
+  const getUserName = () => {
+    if (!user) return `${t('common.defaultFirstName')} ${t('common.defaultLastName')}`;
+    return `${user.prenom || user.first_name || t('common.defaultFirstName')} ${user.nom || user.last_name || t('common.defaultLastName')}`;
   };
 
   return (
@@ -125,19 +255,24 @@ const MainLayout = () => {
         
         <div style={{ padding: '20px' }}>
           <div style={{
-            background: '#c6ff50',
+            background: '#4a7c59',
             borderRadius: '16px',
             padding: '20px',
-            color: '#0c4a2f',
+            color: '#fff',
             textAlign: 'center'
           }}>
             <img 
               src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=cartoon%20farmer%20with%20plants%20in%20greenhouse%20flat%20design&image_size=square" 
-              alt="Add form" 
+              alt="Profile" 
               style={{ width: '100%', borderRadius: '12px', marginBottom: '12px' }}
             />
-            <Button type="text" icon={<PlusOutlined />} style={{ color: '#0c4a2f', fontWeight: '600' }}>
-              + {t('common.add')}
+            <Button 
+              type="text" 
+              icon={<UserOutlined />} 
+              onClick={() => navigate('/profile')}
+              style={{ color: '#fff', fontWeight: '600' }}
+            >
+              My Profile
             </Button>
           </div>
         </div>
@@ -177,7 +312,7 @@ const MainLayout = () => {
                 <Avatar icon={<UserOutlined />} />
                 <div style={{ textAlign: isRTL ? 'right' : 'left' }}>
                   <div style={{ fontSize: '14px', fontWeight: 600, color: '#000' }}>
-                    {user ? `${user.prenom || user.first_name} ${user.nom || user.last_name}` : `${t('common.defaultFirstName')} ${t('common.defaultLastName')}`}
+                    {getUserName()}
                   </div>
                   <div style={{ fontSize: '12px', color: '#8c8c8c' }}>
                     {user?.role ? t(`common.${user.role.toLowerCase()}`) : ''}
