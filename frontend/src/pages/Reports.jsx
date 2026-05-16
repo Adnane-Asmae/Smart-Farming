@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Table, Button, Space, Card, message, Select, DatePicker, Row, Col, Typography } from 'antd';
 import { FileTextOutlined, DownloadOutlined, PlusOutlined, CalendarOutlined, FilterOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Reports = () => {
+  const { t } = useTranslation();
   const [reports, setReports] = useState([
     { id: 1, nom: 'Rapport mensuel - Avril 2024', type: 'Mensuel', date: '01/05/2024', taille: '2.4 MB' },
     { id: 2, nom: 'Rapport hebdomadaire - S19', type: 'Hebdomadaire', date: '12/05/2024', taille: '1.2 MB' },
@@ -14,16 +16,16 @@ const Reports = () => {
   ]);
 
   const handleGenerate = () => {
-    message.success('Rapport généré !');
+    message.success(t('common.reportGenerated'));
   };
 
   const handleDownload = (record) => {
-    message.success(`Téléchargement de ${record.nom}...`);
+    message.success(`${t('common.downloading')} ${record.nom}...`);
   };
 
   const columns = [
     {
-      title: 'Nom du rapport',
+      title: t('common.reportName'),
       dataIndex: 'nom',
       key: 'nom',
       render: (text) => (
@@ -34,25 +36,25 @@ const Reports = () => {
       ),
     },
     {
-      title: 'Type',
+      title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
       render: (text) => <Text type="secondary" style={{ fontSize: 14 }}>{text}</Text>
     },
     {
-      title: 'Date de génération',
+      title: t('common.generationDate'),
       dataIndex: 'date',
       key: 'date',
       render: (text) => <Text type="secondary" style={{ fontSize: 14 }}>{text}</Text>
     },
     {
-      title: 'Taille',
+      title: t('common.size'),
       dataIndex: 'taille',
       key: 'taille',
       render: (text) => <Text type="secondary" style={{ fontSize: 14 }}>{text}</Text>
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 200,
@@ -69,7 +71,7 @@ const Reports = () => {
             fontWeight: 600
           }}
         >
-          Télécharger PDF
+          {t('common.downloadPdf')}
         </Button>
       ),
     },
@@ -80,9 +82,9 @@ const Reports = () => {
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
           <div>
-            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>Rapports et PDF</Title>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>{t('common.reportsPdf')}</Title>
             <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-              Générer et télécharger les rapports du système
+              {t('common.generateDownloadReports')}
             </Paragraph>
           </div>
           <Button 
@@ -99,7 +101,7 @@ const Reports = () => {
               height: 48
             }}
           >
-            Générer nouveau rapport
+            {t('common.generateNewReport')}
           </Button>
         </div>
 
@@ -111,8 +113,8 @@ const Reports = () => {
               hoverable
             >
               <FileTextOutlined style={{ fontSize: 36, color: '#333', marginBottom: 12 }} />
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Rapport</div>
-              <div style={{ fontSize: 13, color: '#667085' }}>Hebdomadaire</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>{t('common.reportsPdf')}</div>
+              <div style={{ fontSize: 13, color: '#667085' }}>{t('common.weekly')}</div>
             </Card>
           </Col>
           <Col xs={24} sm={12} md={6}>
@@ -122,8 +124,8 @@ const Reports = () => {
               hoverable
             >
               <FileTextOutlined style={{ fontSize: 36, color: '#4a7c59', marginBottom: 12 }} />
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Rapport</div>
-              <div style={{ fontSize: 13, color: '#667085' }}>Mensuel</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>{t('common.reportsPdf')}</div>
+              <div style={{ fontSize: 13, color: '#667085' }}>{t('common.monthly')}</div>
             </Card>
           </Col>
           <Col xs={24} sm={12} md={6}>
@@ -133,8 +135,8 @@ const Reports = () => {
               hoverable
             >
               <FileTextOutlined style={{ fontSize: 36, color: '#2385bb', marginBottom: 12 }} />
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Rapport</div>
-              <div style={{ fontSize: 13, color: '#667085' }}>Annuel</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>{t('common.reportsPdf')}</div>
+              <div style={{ fontSize: 13, color: '#667085' }}>{t('common.annual')}</div>
             </Card>
           </Col>
           <Col xs={24} sm={12} md={6}>
@@ -144,8 +146,8 @@ const Reports = () => {
               hoverable
             >
               <FileTextOutlined style={{ fontSize: 36, color: '#f59e0b', marginBottom: 12 }} />
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>Rapport</div>
-              <div style={{ fontSize: 13, color: '#667085' }}>Personnalisé</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#1a1a1a', marginBottom: 4 }}>{t('common.reportsPdf')}</div>
+              <div style={{ fontSize: 13, color: '#667085' }}>{t('common.custom')}</div>
             </Card>
           </Col>
         </Row>
@@ -156,24 +158,24 @@ const Reports = () => {
         >
           <Row gutter={[16, 16]} align="middle">
             <Col xs={24} md={8}>
-              <Text style={{ fontSize: 14, fontWeight: 500, color: '#667085', display: 'block', marginBottom: 8 }}>Période</Text>
+              <Text style={{ fontSize: 14, fontWeight: 500, color: '#667085', display: 'block', marginBottom: 8 }}>{t('common.period')}</Text>
               <RangePicker 
                 style={{ width: '100%', height: 44 }}
                 size="large"
-                placeholder={['Date début', 'Date fin']}
+                placeholder={[t('common.startDate'), t('common.endDate')]}
               />
             </Col>
             <Col xs={24} md={4}>
-              <Text style={{ fontSize: 14, fontWeight: 500, color: '#667085', display: 'block', marginBottom: 8 }}>Type</Text>
+              <Text style={{ fontSize: 14, fontWeight: 500, color: '#667085', display: 'block', marginBottom: 8 }}>{t('common.type')}</Text>
               <Select 
                 style={{ width: '100%', height: 44 }}
                 size="large"
-                placeholder="Tous les rapports"
+                placeholder={t('common.allReports')}
               >
-                <Option value="all">Tous les rapports</Option>
-                <Option value="weekly">Hebdomadaire</Option>
-                <Option value="monthly">Mensuel</Option>
-                <Option value="annual">Annuel</Option>
+                <Option value="all">{t('common.allReports')}</Option>
+                <Option value="weekly">{t('common.weekly')}</Option>
+                <Option value="monthly">{t('common.monthly')}</Option>
+                <Option value="annual">{t('common.annual')}</Option>
               </Select>
             </Col>
             <Col xs={24} md={3}>
@@ -183,7 +185,7 @@ const Reports = () => {
                 icon={<FilterOutlined />}
                 style={{ width: '100%', height: 44, fontSize: 14, fontWeight: 500, color: '#1a1a1a' }}
               >
-                Filtrer
+                {t('common.filter')}
               </Button>
             </Col>
           </Row>

@@ -24,10 +24,10 @@ const Login = () => {
     setLoading(true);
     try {
       await login(values.email, values.password);
-      message.success('Connexion réussie !');
+      message.success(t('common.loginSuccess'));
       navigate('/dashboard');
     } catch (error) {
-      message.error(error.response?.data?.detail || 'Échec de la connexion');
+      message.error(error.response?.data?.detail || t('common.loginFailure'));
     } finally {
       setLoading(false);
     }

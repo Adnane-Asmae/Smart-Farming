@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Card, Typography, Button, Input, Row, Col, Progress, Tag } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, ExperimentOutlined, CalendarOutlined, ArrowUpOutlined, SmileOutlined } from '@ant-design/icons';
 import useAuthStore from '../stores/useAuthStore';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Cultures = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
+  const { t } = useTranslation();
 
   const [crops, setCrops] = useState([
     {
@@ -90,9 +92,12 @@ const Cultures = () => {
       'Good': '#2563eb',
       'Fair': '#ea580c'
     };
+    const healthKey = health === 'Excellent' ? 'excellent' :
+                      health === 'Good' ? 'good' :
+                      'fair';
     return (
       <Tag color={colors[health]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[health], fontWeight: 500 }}>{health}</span>
+        <span style={{ color: textColors[health], fontWeight: 500 }}>{t(`common.${healthKey}`)}</span>
       </Tag>
     );
   };
@@ -112,9 +117,14 @@ const Cultures = () => {
       'Heading': '#ea580c',
       'Harvest Ready': '#2563eb'
     };
+    const stageKey = stage === 'Vegetative' ? 'vegetative' :
+                    stage === 'Flowering' ? 'flowering' :
+                    stage === 'Grain Filling' ? 'grainFilling' :
+                    stage === 'Heading' ? 'heading' :
+                    'harvestReady';
     return (
       <Tag color={colors[stage]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[stage], fontWeight: 500 }}>{stage}</span>
+        <span style={{ color: textColors[stage], fontWeight: 500 }}>{t(`common.${stageKey}`)}</span>
       </Tag>
     );
   };
@@ -130,10 +140,10 @@ const Cultures = () => {
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>
-            Crop Management
+            {t('common.cropManagement')}
           </Title>
           <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-            Monitor crop health, growth stages, and field observations
+            {t('common.monitorCropHealth')}
           </Paragraph>
         </div>
       </div>
@@ -148,7 +158,7 @@ const Cultures = () => {
         styles={{ body: { padding: 24 } }}
       >
         <Input 
-          placeholder="Search crops by name, variety, or parcel..." 
+          placeholder={t('common.searchCrops')}
           prefix={<SearchOutlined style={{ color: '#9ca3af' }} />}
           size="large"
           value={searchText}
@@ -168,13 +178,13 @@ const Cultures = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Active Crops
+              {t('common.activeCrops')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
               {filteredCrops.length}
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              Different varieties
+              {t('common.differentVarieties')}
             </Text>
           </Card>
         </Col>
@@ -190,13 +200,13 @@ const Cultures = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-                  Avg. Health Score
+                  {t('common.avgHealthScore')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   {((crops.reduce((sum, c) => sum + c.healthScore, 0) / crops.length)).toFixed(1)}/10
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-                  <span style={{ color: '#4a7c59' }}>↑ 0.5</span> from last week
+                  <span style={{ color: '#4a7c59' }}>↑ 0.5</span> {t('common.fromLastWeek')}
                 </Text>
               </div>
               <SmileOutlined style={{ fontSize: 18, color: '#f59e0b' }} />
@@ -213,13 +223,13 @@ const Cultures = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Expected Yield
+              {t('common.expectedYield')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
               89 tons
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              This season
+              {t('common.thisSeason')}
             </Text>
           </Card>
         </Col>
@@ -233,13 +243,13 @@ const Cultures = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Days to Harvest
+              {t('common.daysToHarvest')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
               37
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              Average
+              {t('common.average')}
             </Text>
           </Card>
         </Col>
@@ -292,7 +302,7 @@ const Cultures = () => {
               <div style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <Text style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 600 }}>
-                    Growth Progress
+                    {t('common.growthProgress')}
                   </Text>
                   {getGrowthStageTag(crop.growthStage)}
                 </div>
@@ -313,7 +323,7 @@ const Cultures = () => {
                   }}>
                     <CalendarOutlined style={{ color: '#667085', marginBottom: 4 }} />
                     <Text type="secondary" style={{ fontSize: 12, display: 'block', color: '#667085' }}>
-                      Planting Date
+                      {t('common.plantingDate')}
                     </Text>
                     <Text style={{ color: '#1a1a1a', fontWeight: 600, fontSize: 13 }}>
                       {crop.plantingDate}
@@ -328,7 +338,7 @@ const Cultures = () => {
                   }}>
                     <ArrowUpOutlined style={{ color: '#4a7c59', marginBottom: 4 }} />
                     <Text type="secondary" style={{ fontSize: 12, display: 'block', color: '#667085' }}>
-                      Expected Harvest
+                      {t('common.expectedHarvest')}
                     </Text>
                     <Text style={{ color: '#1a1a1a', fontWeight: 600, fontSize: 13 }}>
                       {crop.expectedHarvest}
@@ -347,7 +357,7 @@ const Cultures = () => {
                       fontWeight: 500
                     }}
                   >
-                    View Details
+                    {t('common.viewDetails')}
                   </Button>
                 </Col>
                 <Col xs={12}>
@@ -361,7 +371,7 @@ const Cultures = () => {
                       fontWeight: 600
                     }}
                   >
-                    Add Observation
+                    {t('common.addObservation')}
                   </Button>
                 </Col>
               </Row>
@@ -375,14 +385,14 @@ const Cultures = () => {
   const renderAdminCrops = () => (
     <div style={{ padding: '24px', background: '#f6faf4', minHeight: '100vh' }}>
       <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-        Gestion des cultures
+        {t('common.manageCrops')}
       </Title>
       <Paragraph type="secondary" style={{ marginBottom: 32 }}>
-        Gérer les types de cultures et leur production
+        {t('common.manageCropTypes')}
       </Paragraph>
       <Card>
-        <Title level={4}>Admin Crops Page</Title>
-        <Paragraph>This is the admin view for crops.</Paragraph>
+        <Title level={4}>{t('common.adminCropsPage')}</Title>
+        <Paragraph>{t('common.thisIsAdminViewCrops')}</Paragraph>
       </Card>
     </div>
   );

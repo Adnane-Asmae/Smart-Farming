@@ -1,19 +1,22 @@
 import { Dropdown, Button, Space, Tag } from 'antd';
 import { GlobalOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import useMultilingualStore from '../stores/useMultilingualStore';
 
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
+  const setLanguage = useMultilingualStore(state => state.setLanguage);
 
   const languages = [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'ar', name: 'العربية', flag: '🇲🇦' },
-    { code: 'zgh', name: 'ⵜⴰⵎⵉⴼⵉⵜ', flag: '🇲🇦' }
+    { code: 'zgh', name: 'ⵜⴰⵔⵉⴼⵉⵜ', flag: '🇲🇦' }
   ];
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
+    setLanguage(lng);
   };
 
   const getCurrentLanguage = () => {

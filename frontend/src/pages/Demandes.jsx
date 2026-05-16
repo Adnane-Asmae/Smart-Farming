@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Table, Button, Space, Card, message, Modal, Form, Input, InputNumber, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { Row, Col, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Demandes = () => {
+  const { t } = useTranslation();
   const [demandes, setDemandes] = useState([
     { id: 1, agriculteur: 'Mohammed Alami', type: 'Irrigation urgente', description: 'Besoin d\'irrigation immédiate suite à sécheresse', parcelle: 'Parcelle A1', priorite: 'Haute', date: '14/05/2024 08:30' },
     { id: 2, agriculteur: 'Youssef Chakir', type: 'Maintenance tracteur', description: 'Tracteur nécessite révision complète', parcelle: 'Parcelle B2', priorite: 'Moyenne', date: '14/05/2024 10:15' },
@@ -33,12 +35,12 @@ const Demandes = () => {
   };
 
   const handleDelete = async (id) => {
-    message.success('Demande supprimée');
+    message.success(t('common.demandDeleted'));
     setDemandes(demandes.filter(d => d.id !== id));
   };
 
   const handleSubmit = async (values) => {
-    message.success(editingDemande ? 'Demande modifiée' : 'Demande ajoutée');
+    message.success(editingDemande ? t('common.demandModified') : t('common.demandAdded'));
     setModalVisible(false);
   };
 
@@ -62,13 +64,13 @@ const Demandes = () => {
 
   const columns = [
     {
-      title: 'ID',
+      title: t('common.id'),
       dataIndex: 'id',
       key: 'id',
       render: (id) => <span style={{ fontWeight: 600, color: '#667085' }}>R{String(id).padStart(3, '0')}</span>
     },
     {
-      title: 'Agriculteur',
+      title: t('common.agriculteur'),
       dataIndex: 'agriculteur',
       key: 'agriculteur',
       render: (text) => (
@@ -78,34 +80,34 @@ const Demandes = () => {
       ),
     },
     {
-      title: 'Type',
+      title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
     },
     {
-      title: 'Description',
+      title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
       render: (text) => <span style={{ color: '#667085' }}>{text}</span>
     },
     {
-      title: 'Parcelle',
+      title: t('common.parcelles'),
       dataIndex: 'parcelle',
       key: 'parcelle',
     },
     {
-      title: 'Priorité',
+      title: t('common.priorite'),
       dataIndex: 'priorite',
       key: 'priorite',
       render: getPrioriteBadge
     },
     {
-      title: 'Date',
+      title: t('common.date'),
       dataIndex: 'date',
       key: 'date',
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 150,
@@ -133,14 +135,14 @@ const Demandes = () => {
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
           <div>
-            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>Gestion des demandes</Title>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>{t('common.manageDemands')}</Title>
             <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-              Approuver, rejeter ou supprimer les demandes des agriculteurs
+              {t('common.manageDemandsSubtitle')}
             </Paragraph>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ClockCircleOutlined style={{ color: '#667085' }} />
-            <Text type="secondary">5 en attente</Text>
+            <Text type="secondary">5 {t('common.pending')}</Text>
           </div>
         </div>
 
@@ -151,7 +153,7 @@ const Demandes = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Demandes totales</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.totalDemands')}</Text>
               </div>
               <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>47</Title>
             </Card>
@@ -162,7 +164,7 @@ const Demandes = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>En attente</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.pending')}</Text>
               </div>
               <Title level={2} style={{ margin: 0, color: '#f59e0b', fontSize: 30 }}>5</Title>
             </Card>
@@ -173,7 +175,7 @@ const Demandes = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Approuvées aujourd'hui</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.approvedToday')}</Text>
               </div>
               <Title level={2} style={{ margin: 0, color: '#4a7c59', fontSize: 30 }}>12</Title>
             </Card>
@@ -197,7 +199,7 @@ const Demandes = () => {
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
-            showTotal: (total) => `Total : ${total} demande${total > 1 ? 's' : ''}`,
+            showTotal: (total) => `${t('common.total')} : ${total} demande${total > 1 ? 's' : ''}`,
           }}
         />
       </Card>

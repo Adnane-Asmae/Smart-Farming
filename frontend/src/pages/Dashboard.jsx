@@ -20,12 +20,16 @@ import {
 } from '@ant-design/icons';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import useAuthStore from '../stores/useAuthStore';
+import { useTranslation } from 'react-i18next';
+import { useTranslatedContent } from '../hooks/useTranslatedContent';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Dashboard = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
+  const { t } = useTranslation();
+  const { tContent } = useTranslatedContent();
 
   const waterData = [
     { name: 'Lun', value: 2500 },
@@ -72,10 +76,10 @@ const Dashboard = () => {
   ];
 
   const recentInterventions = [
-    { id: 'INT-2024-145', type: 'Pest Control', parcelle: 'Parcelle A-12', culture: 'Tomates', status: 'In Progress', priority: 'High', date: '2024-05-15' },
-    { id: 'INT-2024-143', type: 'Fertilization', parcelle: 'Parcelle B-5', culture: 'Blé', status: 'To Do', priority: 'Medium', date: '2024-05-16' },
-    { id: 'INT-2024-141', type: 'Soil Testing', parcelle: 'Parcelle C-8', culture: 'Maïs', status: 'To Do', priority: 'Low', date: '2024-05-18' },
-    { id: 'INT-2024-139', type: 'Harvesting', parcelle: 'Parcelle D-3', culture: 'Laitue', status: 'Completed', priority: 'High', date: '2024-05-13' },
+    { id: 'INT-2024-145', type: 'Pest Control Application', parcelle: 'Parcel A-12', culture: 'Tomatoes', status: 'In Progress', priority: 'High', date: '2024-05-15' },
+    { id: 'INT-2024-143', type: 'Fertilization', parcelle: 'Parcel B-5', culture: 'Wheat', status: 'To Do', priority: 'Medium', date: '2024-05-16' },
+    { id: 'INT-2024-141', type: 'Soil Testing', parcelle: 'Parcel C-8', culture: 'Corn', status: 'To Do', priority: 'Low', date: '2024-05-18' },
+    { id: 'INT-2024-139', type: 'Harvesting', parcelle: 'Parcel D-3', culture: 'Lettuce', status: 'Completed', priority: 'High', date: '2024-05-13' },
   ];
 
   const COLORS = ['#4a7c59', '#66bb6a', '#81c784', '#a5d6a7'];
@@ -119,10 +123,10 @@ const Dashboard = () => {
   const renderAdminDashboard = () => (
     <>
       <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-        Admin Dashboard
+        {t('common.adminDashboard')}
       </Title>
       <Paragraph type="secondary" style={{ marginBottom: 32 }}>
-        Complete overview of the SmartFarm platform
+        {t('common.completeOverview')}
       </Paragraph>
 
       {/* Stats Cards */}
@@ -139,13 +143,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Total Farmers
+                  {t('common.totalFarmers')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   156
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#4a7c59' }}>↑ +12</span> this month
+                  <span style={{ color: '#4a7c59' }}>↑ +12</span> {t('common.thisMonth')}
                 </Text>
               </div>
               <div style={{ 
@@ -175,13 +179,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Total Technicians
+                  {t('common.totalTechnicians')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   24
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#4a7c59' }}>↑ +3</span> this month
+                  <span style={{ color: '#4a7c59' }}>↑ +3</span> {t('common.thisMonth')}
                 </Text>
               </div>
               <div style={{ 
@@ -211,13 +215,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Total Parcels
+                  {t('common.totalParcels')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   342
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#4a7c59' }}>↑ +8</span> this month
+                  <span style={{ color: '#4a7c59' }}>↑ +8</span> {t('common.thisMonth')}
                 </Text>
               </div>
               <div style={{ 
@@ -247,13 +251,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Total Machines
+                  {t('common.totalMachines')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   87
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#c43a31' }}>5</span> in maintenance
+                  <span style={{ color: '#c43a31' }}>5</span> {t('common.inMaintenance')}
                 </Text>
               </div>
               <div style={{ 
@@ -283,13 +287,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Active Interventions
+                  {t('common.activeInterventions')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   45
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#4a7c59' }}>↑ 18</span> completed
+                  <span style={{ color: '#4a7c59' }}>↑ 18</span> {t('common.completed')}
                 </Text>
               </div>
               <div style={{ 
@@ -319,13 +323,13 @@ const Dashboard = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 8 }}>
-                  Pending Requests
+                  {t('common.pendingRequests')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   12
                 </Title>
                 <Text type="secondary" style={{ fontSize: 13, marginTop: 16, display: 'block' }}>
-                  <span style={{ color: '#c43a31' }}>↓ +5</span> today
+                  <span style={{ color: '#c43a31' }}>↓ +5</span> {t('common.today')}
                 </Text>
               </div>
               <div style={{ 
@@ -346,7 +350,7 @@ const Dashboard = () => {
 
       {/* Quick Actions */}
       <Title level={4} style={{ marginBottom: 24, color: '#1a1a1a' }}>
-        Quick Actions
+        {t('common.quickActions')}
       </Title>
       <Row gutter={[24, 24]} style={{ marginBottom: 40 }}>
         <Col xs={24} sm={12} md={6}>
@@ -370,7 +374,7 @@ const Dashboard = () => {
             }}
           >
             <PlayCircleOutlined style={{ fontSize: 24, marginBottom: 8 }} />
-            Start Irrigation
+            {t('common.startIrrigation')}
           </Button>
         </Col>
         <Col xs={24} sm={12} md={6}>
@@ -393,7 +397,7 @@ const Dashboard = () => {
             }}
           >
             <PlusOutlined style={{ fontSize: 24, marginBottom: 8 }} />
-            Add Sensor
+            {t('common.addSensor')}
           </Button>
         </Col>
         <Col xs={24} sm={12} md={6}>
@@ -416,7 +420,7 @@ const Dashboard = () => {
             }}
           >
             <FileTextOutlined style={{ fontSize: 24, marginBottom: 8 }} />
-            Generate Report
+            {t('common.generateReport')}
           </Button>
         </Col>
         <Col xs={24} sm={12} md={6}>
@@ -439,14 +443,14 @@ const Dashboard = () => {
             }}
           >
             <SettingOutlined style={{ fontSize: 24, marginBottom: 8 }} />
-            Configuration
+            {t('common.configuration')}
           </Button>
         </Col>
       </Row>
 
       {/* Charts Section */}
       <Title level={4} style={{ marginBottom: 24, color: '#1a1a1a' }}>
-        Analytics and Statistics
+        {t('common.analyticsAndStatistics')}
       </Title>
       <Row gutter={[24, 24]}>
         <Col xs={24} lg={12}>
@@ -456,7 +460,7 @@ const Dashboard = () => {
               border: '1px solid #e2e8e0',
               boxShadow: 'none'
             }}
-            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Water Consumption (Last 7 days)</span>}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>{t('common.waterConsumptionLast7Days')}</span>}
           >
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={waterData}>
@@ -495,7 +499,7 @@ const Dashboard = () => {
               border: '1px solid #e2e8e0',
               boxShadow: 'none'
             }}
-            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Monthly Interventions</span>}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>{t('common.monthlyInterventions')}</span>}
           >
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={interventionsData}>
@@ -522,7 +526,7 @@ const Dashboard = () => {
               border: '1px solid #e2e8e0',
               boxShadow: 'none'
             }}
-            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Crops Distribution</span>}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>{t('common.cropsDistribution')}</span>}
           >
             <Row gutter={[24, 24]} align="middle">
               <Col xs={24} sm={12}>
@@ -587,28 +591,28 @@ const Dashboard = () => {
               border: '1px solid #e2e8e0',
               boxShadow: 'none'
             }}
-            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>Quick Statistics</span>}
+            title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 18 }}>{t('common.quickStatistics')}</span>}
           >
             <div style={{ marginBottom: 24 }}>
-              <Text type="secondary" style={{ fontSize: 13 }}>Crop success rate</Text>
+              <Text type="secondary" style={{ fontSize: 13 }}>{t('common.cropSuccessRate')}</Text>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
-                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Crop success rate</Text>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>{t('common.cropSuccessRate')}</Text>
                 <Text style={{ fontSize: 18, color: '#4a7c59', fontWeight: 700 }}>94%</Text>
               </div>
               <Progress percent={94} strokeColor="#4a7c59" showInfo={false} style={{ marginTop: 12 }} />
             </div>
             <div style={{ marginBottom: 24 }}>
-              <Text type="secondary" style={{ fontSize: 13 }}>Irrigation efficiency</Text>
+              <Text type="secondary" style={{ fontSize: 13 }}>{t('common.irrigationEfficiency')}</Text>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
-                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Irrigation efficiency</Text>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>{t('common.irrigationEfficiency')}</Text>
                 <Text style={{ fontSize: 18, color: '#2385bb', fontWeight: 700 }}>88%</Text>
               </div>
               <Progress percent={88} strokeColor="#2385bb" showInfo={false} style={{ marginTop: 12 }} />
             </div>
             <div>
-              <Text type="secondary" style={{ fontSize: 13 }}>Machine utilization</Text>
+              <Text type="secondary" style={{ fontSize: 13 }}>{t('common.machineUtilization')}</Text>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingBottom: 8, borderBottom: '1px solid #e2e8e0' }}>
-                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>Machine utilization</Text>
+                <Text style={{ fontSize: 15, color: '#1a1a1a' }}>{t('common.machineUtilization')}</Text>
                 <Text style={{ fontSize: 18, color: '#f59e0b', fontWeight: 700 }}>76%</Text>
               </div>
               <Progress percent={76} strokeColor="#f59e0b" showInfo={false} style={{ marginTop: 12 }} />
@@ -624,10 +628,10 @@ const Dashboard = () => {
       <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-            Dashboard Overview
+            {t('common.dashboardOverview')}
           </Title>
           <Paragraph type="secondary" style={{ margin: 0, fontSize: 15 }}>
-            Welcome back, Ahmed! Here's what's happening with your tasks.
+            {t('common.welcomeBack')}
           </Paragraph>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -649,7 +653,7 @@ const Dashboard = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
-                Assigned Interventions
+                {t('common.assignedInterventions')}
               </Text>
               <div style={{ 
                 width: 40, 
@@ -667,7 +671,7 @@ const Dashboard = () => {
               12
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              <span style={{ color: '#2563eb' }}>+3</span> this week
+              <span style={{ color: '#2563eb' }}>+3</span> {t('common.thisWeek')}
             </Text>
           </Card>
         </Col>
@@ -683,7 +687,7 @@ const Dashboard = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
-                Completed Interventions
+                {t('common.completedInterventions')}
               </Text>
               <div style={{ 
                 width: 40, 
@@ -701,7 +705,7 @@ const Dashboard = () => {
               47
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              <span style={{ color: '#059669' }}>98%</span> completion rate
+              <span style={{ color: '#059669' }}>98%</span> {t('common.completionRate')}
             </Text>
           </Card>
         </Col>
@@ -717,7 +721,7 @@ const Dashboard = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
-                Machines Operational
+                {t('common.machinesOperational')}
               </Text>
               <div style={{ 
                 width: 40, 
@@ -735,7 +739,7 @@ const Dashboard = () => {
               8/10
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              2 under maintenance
+              2 {t('common.underMaintenance')}
             </Text>
           </Card>
         </Col>
@@ -751,7 +755,7 @@ const Dashboard = () => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <Text style={{ color: '#666', fontSize: 14, display: 'block' }}>
-                Irrigation Alerts
+                {t('common.irrigationAlerts')}
               </Text>
               <div style={{ 
                 width: 40, 
@@ -769,7 +773,7 @@ const Dashboard = () => {
               5
             </Title>
             <Text type="secondary" style={{ fontSize: 13, marginTop: 8, display: 'block' }}>
-              Requires attention
+              {t('common.requiresAttention')}
             </Text>
           </Card>
         </Col>
@@ -787,7 +791,7 @@ const Dashboard = () => {
             title={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <ArrowUpOutlined style={{ color: '#4a7c59' }} />
-                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Weekly Interventions</span>
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>{t('common.weeklyInterventions')}</span>
               </div>
             }
           >
@@ -819,7 +823,7 @@ const Dashboard = () => {
             title={
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <CloudOutlined style={{ color: '#2563eb' }} />
-                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Irrigation Levels (Today)</span>
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>{t('common.irrigationLevelsToday')}</span>
               </div>
             }
           >
@@ -859,8 +863,8 @@ const Dashboard = () => {
             }}
             title={
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Recent Interventions</span>
-                <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#2563eb' }}>View All</Button>
+                <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>{t('common.recentInterventions')}</span>
+                <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#2563eb' }}>{t('common.viewAll')}</Button>
               </div>
             }
           >
@@ -870,18 +874,18 @@ const Dashboard = () => {
               showHeader
               columns={[
                 {
-                  title: 'ID',
+                  title: t('common.id'),
                   dataIndex: 'id',
                   key: 'id',
                   render: (id) => <Text style={{ fontWeight: 600, color: '#667085' }}>{id}</Text>
                 },
                 {
-                  title: 'Intervention',
+                  title: t('common.intervention'),
                   dataIndex: 'type',
                   key: 'type',
                 },
                 {
-                  title: 'Parcel / Crop',
+                  title: t('common.parcelCrop'),
                   dataIndex: 'parcelle',
                   key: 'parcelle',
                   render: (parcelle, record) => (
@@ -895,26 +899,26 @@ const Dashboard = () => {
                   )
                 },
                 {
-                  title: 'Status',
+                  title: t('common.status'),
                   dataIndex: 'status',
                   key: 'status',
                   render: getStatusTag
                 },
                 {
-                  title: 'Priority',
+                  title: t('common.priority'),
                   dataIndex: 'priority',
                   key: 'priority',
                   render: getPriorityTag
                 },
                 {
-                  title: 'Due Date',
+                  title: t('common.dueDate'),
                   dataIndex: 'date',
                   key: 'date',
                 },
                 {
-                  title: 'Action',
+                  title: t('common.action'),
                   key: 'action',
-                  render: () => <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a' }}>View</Button>
+                  render: () => <Button type="link" style={{ fontSize: 14, fontWeight: 500, color: '#1a1a1a' }}>{t('common.view')}</Button>
                 }
               ]}
             />
@@ -930,7 +934,7 @@ const Dashboard = () => {
                   border: '1px solid #e2e8e0',
                   boxShadow: 'none'
                 }}
-                title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Quick Actions</span>}
+                title={<span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>{t('common.quickActions')}</span>}
               >
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Button 
@@ -948,7 +952,7 @@ const Dashboard = () => {
                     }}
                   >
                     <FileTextOutlined />
-                    Add Field Observation
+                    {t('common.addFieldObservation')}
                   </Button>
                   <Button 
                     block 
@@ -965,7 +969,7 @@ const Dashboard = () => {
                     }}
                   >
                     <TruckOutlined />
-                    Report Machine Issue
+                    {t('common.reportMachineIssue')}
                   </Button>
                   <Button 
                     block 
@@ -982,7 +986,7 @@ const Dashboard = () => {
                     }}
                   >
                     <FireOutlined />
-                    Update Irrigation Status
+                    {t('common.updateIrrigationStatus')}
                   </Button>
                 </Space>
               </Card>
@@ -998,7 +1002,7 @@ const Dashboard = () => {
                 title={
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <WarningOutlined style={{ color: '#ea580c' }} />
-                    <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>Active Alerts</span>
+                    <span style={{ color: '#1a1a1a', fontWeight: 700, fontSize: 16 }}>{t('common.activeAlerts')}</span>
                   </div>
                 }
               >
@@ -1006,17 +1010,17 @@ const Dashboard = () => {
                   <div style={{ background: '#fee2e2', padding: 16, borderRadius: 10, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <FireOutlined style={{ color: '#dc2626', fontSize: 24 }} />
                     <div>
-                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#991b1b' }}>Critical: Irrigation System</Text>
+                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#991b1b' }}>{t('common.critical')}: Irrigation System</Text>
                       <br/>
-                      <Text type="secondary" style={{ fontSize: 13, color: '#991b1b' }}>Parcel A-12 water pressure low - requires immediate attention</Text>
+                      <Text type="secondary" style={{ fontSize: 13, color: '#991b1b' }}>{t('common.waterPressureLow')}</Text>
                     </div>
                   </div>
                   <div style={{ background: '#fff7ed', padding: 16, borderRadius: 10, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <TruckOutlined style={{ color: '#ea580c', fontSize: 24 }} />
                     <div>
-                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#9a3412' }}>Warning: Equipment Maintenance</Text>
+                      <Text style={{ fontSize: 14, fontWeight: 600, color: '#9a3412' }}>{t('common.warning')}: Equipment Maintenance</Text>
                       <br/>
-                      <Text type="secondary" style={{ fontSize: 13, color: '#9a3412' }}>Tractor T-03 scheduled maintenance overdue by 3 days</Text>
+                      <Text type="secondary" style={{ fontSize: 13, color: '#9a3412' }}>{t('common.scheduledMaintenanceOverdue')}</Text>
                     </div>
                   </div>
                 </Space>

@@ -1,4 +1,4 @@
-import { Layout, Menu, Avatar, Dropdown, Button, Space, Modal } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Button, Space } from 'antd';
 import {
   DashboardOutlined,
   UserOutlined,
@@ -9,7 +9,6 @@ import {
   FileTextOutlined,
   ThunderboltOutlined,
   LogoutOutlined,
-  PlusOutlined,
   TeamOutlined,
   SettingOutlined,
   BarChartOutlined,
@@ -20,12 +19,7 @@ import useAuthStore from '../stores/useAuthStore';
 import { logout } from '../api';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { useEffect, useState } from 'react';
-import Users from '../pages/Users';
-import Parcelles from '../pages/Parcelles';
-import Cultures from '../pages/Cultures';
-import Machines from '../pages/Machines';
-import Interventions from '../pages/Interventions';
+import { useState, useEffect } from 'react';
 
 const { Header, Sider, Content } = Layout;
 
@@ -34,15 +28,20 @@ const MainLayout = () => {
   const location = useLocation();
   const { user } = useAuthStore();
   const { t, i18n } = useTranslation();
-  const [isRTL, setIsRTL] = useState(false);
-  const [addModalType, setAddModalType] = useState(null);
-  const [addModalVisible, setAddModalVisible] = useState(false);
 
   const rtlLanguages = ['ar', 'zgh'];
+  const [isRTL, setIsRTL] = useState(rtlLanguages.includes(i18n.language));
 
   useEffect(() => {
-    setIsRTL(rtlLanguages.includes(i18n.language));
-  }, [i18n.language]);
+    const handleLanguageChanged = (lng) => {
+      setIsRTL(rtlLanguages.includes(lng));
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
 
   const handleLogout = async () => {
     await logout();
@@ -51,13 +50,12 @@ const MainLayout = () => {
 
   const userRole = user?.role || 'FARMER';
 
-  // ─── Menus spécifiques par rôle ─────────────────────────────────────────────
   const getMenuItems = () => {
     const commonItems = [
       {
         key: '/dashboard',
         icon: <DashboardOutlined />,
-        label: 'Dashboard',
+        label: t('common.dashboard'),
       }
     ];
 
@@ -68,7 +66,7 @@ const MainLayout = () => {
           {
             key: '/users',
             icon: <TeamOutlined />,
-            label: 'Gestion utilisateurs',
+            label: t('common.manageUsers'),
           },
           {
             key: '/parcelles',
@@ -103,12 +101,12 @@ const MainLayout = () => {
           {
             key: '/settings',
             icon: <SettingOutlined />,
-            label: 'Paramètres système',
+            label: t('common.systemSettings'),
           },
           {
             key: '/reports',
             icon: <BarChartOutlined />,
-            label: 'Rapports',
+            label: t('common.generateReports'),
           },
         ];
       
@@ -154,42 +152,42 @@ const MainLayout = () => {
           {
             key: '/interventions',
             icon: <FileTextOutlined />,
-            label: 'My Interventions',
+            label: t('common.myInterventions'),
           },
           {
             key: '/parcelles',
             icon: <EnvironmentOutlined />,
-            label: 'Parcels',
+            label: t('common.parcelles'),
           },
           {
             key: '/cultures',
             icon: <ExperimentOutlined />,
-            label: 'Crops',
+            label: t('common.cultures'),
           },
           {
             key: '/irrigation',
             icon: <ThunderboltOutlined />,
-            label: 'Irrigation',
+            label: t('common.irrigation'),
           },
           {
             key: '/machines',
             icon: <TruckOutlined />,
-            label: 'Machines',
+            label: t('common.machines'),
           },
           {
             key: '/history',
             icon: <HistoryOutlined />,
-            label: 'History',
+            label: t('common.history'),
           },
           {
             key: '/reports',
             icon: <BarChartOutlined />,
-            label: 'Reports',
+            label: t('common.generateReports'),
           },
           {
             key: '/profile',
             icon: <UserOutlined />,
-            label: 'Profile',
+            label: t('common.myProfile'),
           },
         ];
       
@@ -227,18 +225,9 @@ const MainLayout = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
-        width={220}
-        theme="dark"
-        style={{ order: isRTL ? 2 : 1 }}
-      >
-        <div style={{
-          height: 70,
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 20px',
-        }}>
+    <Layout style={{ minHeight: '100vh', flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+      <Sider width={220} theme="dark">
+        <div style={{ height: 70, display: 'flex', alignItems: 'center', padding: '0 20px' }}>
           <span style={{ color: '#c6ff50', fontWeight: 'bold', fontSize: '20px' }}>
             🌾 Smart Farming
           </span>
@@ -272,7 +261,7 @@ const MainLayout = () => {
               onClick={() => navigate('/profile')}
               style={{ color: '#fff', fontWeight: '600' }}
             >
-              My Profile
+              {t('common.myProfile')}
             </Button>
           </div>
         </div>
@@ -280,13 +269,14 @@ const MainLayout = () => {
         <div style={{ padding: '0 20px 20px' }}>
           <Button 
             type="text" 
-            icon={<LogoutOutlined />} 
+            icon={<LogoutOutlined />}
             onClick={handleLogout}
             style={{ 
               color: '#a3b8a9', 
               width: '100%', 
-              textAlign: 'left',
-              justifyContent: 'flex-start'
+              textAlign: isRTL ? 'right' : 'left',
+              justifyContent: isRTL ? 'flex-end' : 'flex-start',
+              flexDirection: isRTL ? 'row-reverse' : 'row'
             }}
           >
             {t('common.logout').toUpperCase()}
@@ -294,12 +284,12 @@ const MainLayout = () => {
         </div>
       </Sider>
       
-      <Layout style={{ order: isRTL ? 1 : 2, background: '#f0fdf4' }}>
+      <Layout style={{ background: '#f0fdf4' }}>
         <Header style={{
           background: 'transparent',
           padding: '0 24px 24px',
           display: 'flex',
-          justifyContent: isRTL ? 'space-between' : 'space-between',
+          justifyContent: 'space-between',
           alignItems: 'center',
           height: 'auto',
           lineHeight: 'normal'
@@ -315,7 +305,12 @@ const MainLayout = () => {
                     {getUserName()}
                   </div>
                   <div style={{ fontSize: '12px', color: '#8c8c8c' }}>
-                    {user?.role ? t(`common.${user.role.toLowerCase()}`) : ''}
+                    {user?.role ? t(`common.${
+                      user.role === 'ADMIN' ? 'admin' :
+                      user.role === 'FARMER' ? 'farmer' :
+                      user.role === 'TECHNICIEN' || user.role === 'Agronomist' ? 'technician' :
+                      'user'
+                    }`) : ''}
                   </div>
                 </div>
               </Button>

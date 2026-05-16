@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Table, Card, Typography, Tag } from 'antd';
 import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text, Paragraph } = Typography;
 
 const History = () => {
+  const { t } = useTranslation();
   const [historyItems, setHistoryItems] = useState([
     { id: 1, type: 'Intervention', action: 'Pest Control completed', parcelle: 'Parcelle A-12', date: '14/05/2024 10:30', status: 'Completed' },
     { id: 2, type: 'Irrigation', action: 'Irrigation cycle started', parcelle: 'Parcelle B-5', date: '14/05/2024 08:00', status: 'Active' },
@@ -33,29 +35,29 @@ const History = () => {
 
   const columns = [
     {
-      title: 'Type',
+      title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
     },
     {
-      title: 'Action',
+      title: t('common.action'),
       dataIndex: 'action',
       key: 'action',
       render: (text) => <Text style={{ fontWeight: 500 }}>{text}</Text>
     },
     {
-      title: 'Parcelle / Machine',
+      title: t('common.parcelleMachine'),
       dataIndex: 'parcelle',
       key: 'parcelle',
     },
     {
-      title: 'Date',
+      title: t('common.date'),
       dataIndex: 'date',
       key: 'date',
       render: (text) => <Text type="secondary">{text}</Text>
     },
     {
-      title: 'Status',
+      title: t('common.status'),
       dataIndex: 'status',
       key: 'status',
       render: getStatusTag
@@ -65,10 +67,10 @@ const History = () => {
   return (
     <div style={{ padding: '24px', background: '#f6faf4', minHeight: '100vh' }}>
       <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-        Historique des actions
+        {t('common.historyTitle')}
       </Title>
       <Paragraph type="secondary" style={{ marginBottom: 32 }}>
-        Suivi de toutes les actions effectuées sur la plateforme
+        {t('common.historySubtitle')}
       </Paragraph>
 
       <Card

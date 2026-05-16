@@ -10,12 +10,14 @@ import {
   TeamOutlined
 } from '@ant-design/icons';
 import useAuthStore from '../stores/useAuthStore';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Profile = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
+  const { t } = useTranslation();
 
   const getStatusTag = (status) => {
     return (
@@ -23,19 +25,30 @@ const Profile = () => {
         color="#d1fae5" 
         style={{ border: 'none' }}
       >
-        <span style={{ color: '#059669', fontWeight: 500 }}>{status}</span>
+        <span style={{ color: '#059669', fontWeight: 500 }}>{t('common.active')}</span>
       </Tag>
     );
   };
+
+  const skills = [
+    'cropManagement',
+    'irrigationSystems',
+    'pestControl',
+    'soilAnalysis',
+    'machineOperation',
+    'organicFarming',
+    'precisionAgriculture',
+    'dataAnalysis'
+  ];
 
   const renderTechnicianProfile = () => (
     <>
       <div style={{ marginBottom: 24 }}>
         <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>
-          My Profile
+          {t('common.myProfile')}
         </Title>
         <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-          Manage your personal information and view your performance
+          {t('common.managePersonalInfo')}
         </Paragraph>
       </div>
 
@@ -59,13 +72,13 @@ const Profile = () => {
                   fontWeight: 600
                 }}
               >
-                AT
+                YE
               </Avatar>
               <Title level={3} style={{ margin: 0, color: '#1a1a1a', fontSize: 24 }}>
-                Ahmed Tazi
+                Youssef El Idrissi
               </Title>
               <Text type="secondary" style={{ fontSize: 14, display: 'block', marginBottom: 12 }}>
-                Agricultural Technician
+                {t('common.agriculturalTechnician')}
               </Text>
               {getStatusTag('Active')}
             </div>
@@ -75,7 +88,7 @@ const Profile = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <MailOutlined style={{ color: '#667085', fontSize: 18 }} />
                   <Text style={{ color: '#667085', fontSize: 14 }}>
-                    ahmed.tazi@smartfarming.ma
+                    youssef.elidrissi@smartfarming.ma
                   </Text>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -87,13 +100,13 @@ const Profile = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <EnvironmentOutlined style={{ color: '#667085', fontSize: 18 }} />
                   <Text style={{ color: '#667085', fontSize: 14 }}>
-                    Casablanca, Morocco
+                    {t('common.casablancaMorocco')}
                   </Text>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <CalendarOutlined style={{ color: '#667085', fontSize: 18 }} />
                   <Text style={{ color: '#667085', fontSize: 14 }}>
-                    Joined January 2023
+                    {t('common.joined')} {t('common.january2023')}
                   </Text>
                 </div>
               </Space>
@@ -109,7 +122,7 @@ const Profile = () => {
                 height: 44
               }}
             >
-              Edit Profile
+              {t('common.editProfile')}
             </Button>
           </Card>
         </Col>
@@ -127,7 +140,7 @@ const Profile = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <ArrowUpOutlined style={{ color: '#23a045', fontSize: 20 }} />
                   <Title level={4} style={{ margin: 0, color: '#1a1a1a', fontSize: 18 }}>
-                    Performance Overview
+                    {t('common.performanceOverview')}
                   </Title>
                 </div>
               }
@@ -146,7 +159,7 @@ const Profile = () => {
                       247
                     </Title>
                     <Text type="secondary" style={{ fontSize: 13, display: 'block', marginTop: 4 }}>
-                      Total Interventions
+                      {t('common.totalInterventions')}
                     </Text>
                   </Card>
                 </Col>
@@ -163,7 +176,7 @@ const Profile = () => {
                       98%
                     </Title>
                     <Text type="secondary" style={{ fontSize: 13, display: 'block', marginTop: 4 }}>
-                      Completion Rate
+                      {t('common.completionRate')}
                     </Text>
                   </Card>
                 </Col>
@@ -180,7 +193,7 @@ const Profile = () => {
                       4.6/5
                     </Title>
                     <Text type="secondary" style={{ fontSize: 13, display: 'block', marginTop: 4 }}>
-                      Avg. Rating
+                      {t('common.avgRating')}
                     </Text>
                   </Card>
                 </Col>
@@ -197,7 +210,7 @@ const Profile = () => {
                       1240h
                     </Title>
                     <Text type="secondary" style={{ fontSize: 13, display: 'block', marginTop: 4 }}>
-                      Hours Worked
+                      {t('common.hoursWorked')}
                     </Text>
                   </Card>
                 </Col>
@@ -213,14 +226,14 @@ const Profile = () => {
               styles={{ body: { padding: 28 } }}
               title={
                 <Title level={4} style={{ margin: 0, color: '#1a1a1a', fontSize: 18 }}>
-                  Employment Information
+                  {t('common.employmentInformation')}
                 </Title>
               }
             >
               <Row gutter={[24, 24]} style={{ marginTop: 8 }}>
                 <Col xs={24} sm={12}>
                   <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Employee ID
+                    {t('common.employeeId')}
                   </Text>
                   <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 600 }}>
                     EMP-2023-145
@@ -228,26 +241,26 @@ const Profile = () => {
                 </Col>
                 <Col xs={24} sm={12}>
                   <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Department
+                    {t('common.department')}
                   </Text>
                   <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 600 }}>
-                    Field Operations
+                    {t('common.fieldOperations')}
                   </Text>
                 </Col>
                 <Col xs={24}>
                   <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 4, marginTop: 8 }}>
-                    Specialization
+                    {t('common.specialization')}
                   </Text>
                   <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 600 }}>
-                    Crop Management & Irrigation
+                    {t('common.cropManagementIrrigation')}
                   </Text>
                 </Col>
                 <Col xs={24}>
                   <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 4, marginTop: 8 }}>
-                    Bio
+                    {t('common.bio')}
                   </Text>
                   <Text style={{ color: '#667085', fontSize: 14, lineHeight: 1.6 }}>
-                    Experienced agricultural technician specializing in modern farming techniques, crop health monitoring, and precision irrigation systems. Passionate about sustainable agriculture and implementing smart farming solutions.
+                    {t('common.bioDescription')}
                   </Text>
                 </Col>
               </Row>
@@ -264,22 +277,13 @@ const Profile = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <TeamOutlined style={{ color: '#23a045', fontSize: 20 }} />
                   <Title level={4} style={{ margin: 0, color: '#1a1a1a', fontSize: 18 }}>
-                    Skills & Expertise
+                    {t('common.skillsExpertise')}
                   </Title>
                 </div>
               }
             >
               <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {[
-                  'Crop Management',
-                  'Irrigation Systems',
-                  'Pest Control',
-                  'Soil Analysis',
-                  'Machine Operation',
-                  'Organic Farming',
-                  'Precision Agriculture',
-                  'Data Analysis'
-                ].map((skill, i) => (
+                {skills.map((skill, i) => (
                   <Tag 
                     key={i}
                     color="#d1fae5" 
@@ -291,7 +295,7 @@ const Profile = () => {
                       fontWeight: 500
                     }}
                   >
-                    <span style={{ color: '#23a045' }}>{skill}</span>
+                    <span style={{ color: '#23a045' }}>{t(`common.${skill}`)}</span>
                   </Tag>
                 ))}
               </div>
@@ -308,7 +312,7 @@ const Profile = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <TeamOutlined style={{ color: '#23a045', fontSize: 20 }} />
                   <Title level={4} style={{ margin: 0, color: '#1a1a1a', fontSize: 18 }}>
-                    Certifications & Training
+                    {t('common.certificationsTraining')}
                   </Title>
                 </div>
               }
@@ -335,10 +339,10 @@ const Profile = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <Title level={5} style={{ margin: 0, color: '#1a1a1a', fontSize: 17 }}>
-                        Certified Agricultural Technician
+                        {t('common.certifiedAgriculturalTechnician')}
                       </Title>
                       <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>
-                        Ministry of Agriculture Morocco • 2022
+                        {t('common.ministryAgricultureMorocco')} • 2022
                       </Text>
                     </div>
                   </div>
@@ -365,10 +369,10 @@ const Profile = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <Title level={5} style={{ margin: 0, color: '#1a1a1a', fontSize: 17 }}>
-                        Irrigation Systems Specialist
+                        {t('common.irrigationSystemsSpecialist')}
                       </Title>
                       <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>
-                        International Irrigation Association • 2023
+                        {t('common.internationalIrrigationAssociation')} • 2023
                       </Text>
                     </div>
                   </div>
@@ -395,10 +399,10 @@ const Profile = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <Title level={5} style={{ margin: 0, color: '#1a1a1a', fontSize: 17 }}>
-                        Organic Farming Certification
+                        {t('common.organicFarmingCertification')}
                       </Title>
                       <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>
-                        Organic Agriculture Association • 2023
+                        {t('common.organicAgricultureAssociation')} • 2023
                       </Text>
                     </div>
                   </div>
@@ -425,10 +429,10 @@ const Profile = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                       <Title level={5} style={{ margin: 0, color: '#1a1a1a', fontSize: 17 }}>
-                        Smart Farming Technologies
+                        {t('common.smartFarmingTechnologies')}
                       </Title>
                       <Text type="secondary" style={{ fontSize: 14, display: 'block', marginTop: 4 }}>
-                        AgTech Institute • 2024
+                        {t('common.agtechInstitute')} • 2024
                       </Text>
                     </div>
                   </div>
@@ -443,7 +447,7 @@ const Profile = () => {
 
   const renderDefaultProfile = () => (
     <div style={{ padding: '24px' }}>
-      <Title level={2}>My Profile</Title>
+      <Title level={2}>{t('common.myProfile')}</Title>
       <Paragraph>Profile page for {userRole}</Paragraph>
     </div>
   );

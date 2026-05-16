@@ -20,7 +20,7 @@ const Users = () => {
       const response = await api.get('/users/');
       setUsers(response.data.results || response.data);
     } catch {
-      message.error('Erreur lors du chargement des utilisateurs');
+      message.error(t('common.errorLoadingUsers'));
     } finally {
       setLoading(false);
     }
@@ -45,20 +45,20 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       await api.delete(`/users/${id}/`);
-      message.success('Utilisateur supprimé avec succès');
+      message.success(t('common.userDeletedSuccessfully'));
       fetchUsers();
     } catch {
-      message.error('Erreur lors de la suppression');
+      message.error(t('common.errorDeletingUser'));
     }
   };
 
   const handleToggleStatus = async (id) => {
     try {
       await api.post(`/users/${id}/toggle-statut/`);
-      message.success('Statut mis à jour');
+      message.success(t('common.statusUpdated'));
       fetchUsers();
     } catch {
-      message.error('Erreur lors de la mise à jour du statut');
+      message.error(t('common.errorUpdatingStatus'));
     }
   };
 
@@ -66,21 +66,21 @@ const Users = () => {
     try {
       if (editingUser) {
         await api.put(`/users/${editingUser.id}/`, values);
-        message.success('Utilisateur modifié avec succès');
+        message.success(t('common.userEdited'));
       } else {
         await api.post('/users/', values);
-        message.success('Utilisateur ajouté avec succès');
+        message.success(t('common.userAdded'));
       }
       setModalVisible(false);
       fetchUsers();
     } catch {
-      message.error('Erreur lors de la sauvegarde');
+      message.error(t('common.errorSavingUser'));
     }
   };
 
   const columns = [
     {
-      title: 'Nom',
+      title: t('common.name'),
       dataIndex: 'nom',
       key: 'nom',
       render: (text, record) => (
@@ -91,12 +91,12 @@ const Users = () => {
       ),
     },
     {
-      title: 'Email',
+      title: t('common.email'),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: 'Rôle',
+      title: t('common.role'),
       dataIndex: 'role',
       key: 'role',
       render: (role) => {
@@ -105,32 +105,27 @@ const Users = () => {
           TECHNICIEN: 'orange',
           FARMER: 'green',
         };
-        const roles = {
-          ADMIN: 'Administrateur',
-          TECHNICIEN: 'Agronome',
-          FARMER: 'Agriculteur',
-        };
-        return <Tag color={colors[role]}>{roles[role]}</Tag>;
+        return <Tag color={colors[role]}>{t(`common.${role.toLowerCase()}`)}</Tag>;
       },
     },
     {
-      title: 'Statut',
+      title: t('common.status'),
       dataIndex: 'statut',
       key: 'statut',
       render: (statut, record) => (
         <Tag color={statut ? 'success' : 'default'}>
-          {statut ? 'Actif' : 'Inactif'}
+          {statut ? t('common.active') : t('common.inactive')}
         </Tag>
       ),
     },
     {
-      title: 'Date de création',
+      title: t('common.creationDate'),
       dataIndex: 'date_creation',
       key: 'date_creation',
       render: (date) => new Date(date).toLocaleDateString('fr-FR'),
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 250,
@@ -143,14 +138,14 @@ const Users = () => {
             onClick={() => handleEdit(record)}
             size="small"
           >
-            Modifier
+            {t('common.modify')}
           </Button>
           <Button 
             icon={<EyeOutlined />} 
             onClick={() => handleToggleStatus(record.id)}
             size="small"
           >
-            {record.statut ? 'Désactiver' : 'Activer'}
+            {record.statut ? t('common.deactivate') : t('common.activate')}
           </Button>
           <Button 
             icon={<DeleteOutlined />} 
@@ -158,7 +153,7 @@ const Users = () => {
             onClick={() => handleDelete(record.id)}
             size="small"
           >
-            Supprimer
+            {t('common.delete')}
           </Button>
         </Space>
       ),
@@ -171,7 +166,7 @@ const Users = () => {
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <UserOutlined style={{ fontSize: 24, color: '#4a7c59' }} />
-            <span style={{ fontSize: 20, fontWeight: 700 }}>Gestion des utilisateurs</span>
+            <span style={{ fontSize: 20, fontWeight: 700 }}>{t('common.manageUsers')}</span>
           </div>
         }
         extra={
@@ -187,7 +182,7 @@ const Users = () => {
               boxShadow: '0 4px 12px rgba(74, 124, 89, 0.3)'
             }}
           >
-            Ajouter un utilisateur
+            {t('common.addUser')}
           </Button>
         }
         style={{ 
@@ -205,7 +200,7 @@ const Users = () => {
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
-            showTotal: (total) => `Total : ${total} utilisateur${total > 1 ? 's' : ''}`,
+            showTotal: (total) => `${t('common.total')} : ${total} utilisateur${total > 1 ? 's' : ''}`,
           }}
         />
       </Card>
@@ -215,7 +210,7 @@ const Users = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {editingUser ? <EditOutlined /> : <PlusOutlined />}
             <span style={{ fontSize: 18, fontWeight: 700 }}>
-              {editingUser ? 'Modifier l\'utilisateur' : 'Ajouter un utilisateur'}
+              {editingUser ? t('common.editUser') : t('common.addUser')}
             </span>
           </div>
         }
@@ -234,38 +229,38 @@ const Users = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <Form.Item
               name="prenom"
-              label="Prénom"
-              rules={[{ required: true, message: 'Veuillez entrer le prénom' }]}
+              label={t('common.firstName')}
+              rules={[{ required: true, message: t('common.enterFirstName') }]}
             >
-              <Input placeholder="Prénom" size="large" />
+              <Input placeholder={t('common.firstName')} size="large" />
             </Form.Item>
             <Form.Item
               name="nom"
-              label="Nom"
-              rules={[{ required: true, message: 'Veuillez entrer le nom' }]}
+              label={t('common.lastName')}
+              rules={[{ required: true, message: t('common.enterLastName') }]}
             >
-              <Input placeholder="Nom" size="large" />
+              <Input placeholder={t('common.lastName')} size="large" />
             </Form.Item>
           </div>
           <Form.Item
             name="email"
-            label="Email"
+            label={t('common.email')}
             rules={[
-              { required: true, message: 'Veuillez entrer l\'email' },
-              { type: 'email', message: 'Email invalide' }
+              { required: true, message: t('common.enterEmail') },
+              { type: 'email', message: t('common.invalidEmail') }
             ]}
           >
-            <Input placeholder="Email" size="large" />
+            <Input placeholder={t('common.email')} size="large" />
           </Form.Item>
           <Form.Item
             name="role"
-            label="Rôle"
-            rules={[{ required: true, message: 'Veuillez sélectionner le rôle' }]}
+            label={t('common.role')}
+            rules={[{ required: true, message: t('common.selectRole') }]}
           >
-            <Select placeholder="Sélectionner le rôle" size="large">
-              <Option value="ADMIN">Administrateur</Option>
-              <Option value="TECHNICIEN">Agronome</Option>
-              <Option value="FARMER">Agriculteur</Option>
+            <Select placeholder={t('common.selectRole')} size="large">
+              <Option value="ADMIN">{t('common.admin')}</Option>
+              <Option value="TECHNICIEN">{t('common.agronomist')}</Option>
+              <Option value="FARMER">{t('common.farmer')}</Option>
             </Select>
           </Form.Item>
 
@@ -276,7 +271,7 @@ const Users = () => {
                 onClick={() => setModalVisible(false)}
                 style={{ borderRadius: 8, padding: '0 24px' }}
               >
-                Annuler
+                {t('common.cancel')}
               </Button>
               <Button 
                 type="primary" 
@@ -290,7 +285,7 @@ const Users = () => {
                   boxShadow: '0 4px 12px rgba(74, 124, 89, 0.3)'
                 }}
               >
-                Enregistrer
+                {t('common.save')}
               </Button>
             </Space>
           </Form.Item>

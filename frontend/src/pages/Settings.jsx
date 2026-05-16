@@ -14,9 +14,9 @@ const Settings = () => {
   const handleSave = async (values) => {
     setLoading(true);
     try {
-      await message.success('Paramètres enregistrés avec succès');
+      await message.success(t('common.settingsSaved'));
     } catch {
-      message.error('Erreur lors de l\'enregistrement');
+      message.error(t('common.errorSavingSettings'));
     } finally {
       setLoading(false);
     }
@@ -24,7 +24,7 @@ const Settings = () => {
 
   const changeLanguage = (lang) => {
     i18n.changeLanguage(lang);
-    message.success(`Langue changée en ${lang === 'fr' ? 'Français' : lang === 'en' ? 'Anglais' : lang === 'ar' ? 'Arabe' : 'Amazigh'}`);
+    message.success(`${t('common.languageChanged')} ${lang === 'fr' ? t('common.french') : lang === 'en' ? t('common.english') : lang === 'ar' ? t('common.arabic') : t('common.amazigh')}`);
   };
 
   return (
@@ -36,7 +36,7 @@ const Settings = () => {
             title={
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <SettingOutlined style={{ fontSize: 20, color: '#4a7c59' }} />
-                <span style={{ fontSize: 18, fontWeight: 700 }}>Paramètres généraux</span>
+                <span style={{ fontSize: 18, fontWeight: 700 }}>{t('common.generalSettings')}</span>
               </div>
             }
             style={{ 
@@ -56,7 +56,7 @@ const Settings = () => {
                 label={
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <GlobalOutlined />
-                    <span>Langue de l'interface</span>
+                    <span>{t('common.interfaceLanguage')}</span>
                   </div>
                 }
               >
@@ -67,7 +67,7 @@ const Settings = () => {
                   <Option value="fr">Français</Option>
                   <Option value="en">English</Option>
                   <Option value="ar">العربية</Option>
-                  <Option value="zgh">ⵜⴰⵎⵉⴼⵉⵜ</Option>
+                  <Option value="zgh">ⵜⴰⵔⵉⴼⵉⵜ</Option>
                 </Select>
               </Form.Item>
 
@@ -76,14 +76,14 @@ const Settings = () => {
                 label={
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <BellOutlined />
-                    <span>Notifications</span>
+                    <span>{t('common.notifications')}</span>
                   </div>
                 }
                 valuePropName="checked"
               >
                 <Switch 
-                  checkedChildren="Activées" 
-                  unCheckedChildren="Désactivées"
+                  checkedChildren={t('common.enabled')} 
+                  unCheckedChildren={t('common.disabled')}
                   style={{ backgroundColor: '#4a7c59' }}
                 />
               </Form.Item>
@@ -107,7 +107,7 @@ const Settings = () => {
                     boxShadow: '0 4px 12px rgba(74, 124, 89, 0.3)'
                   }}
                 >
-                  Enregistrer les paramètres
+                  {t('common.saveSettings')}
                 </Button>
               </Form.Item>
             </Form>
@@ -120,7 +120,7 @@ const Settings = () => {
             title={
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <SecurityScanOutlined style={{ fontSize: 20, color: '#4a7c59' }} />
-                <span style={{ fontSize: 18, fontWeight: 700 }}>Sécurité</span>
+                <span style={{ fontSize: 18, fontWeight: 700 }}>{t('common.security')}</span>
               </div>
             }
             style={{ 
@@ -131,19 +131,19 @@ const Settings = () => {
           >
             <Form layout="vertical">
               <Form.Item
-                label="Mot de passe actuel"
+                label={t('common.currentPassword')}
               >
-                <Input.Password placeholder="Mot de passe actuel" size="large" />
+                <Input.Password placeholder={t('common.currentPassword')} size="large" />
               </Form.Item>
               <Form.Item
-                label="Nouveau mot de passe"
+                label={t('common.newPassword')}
               >
-                <Input.Password placeholder="Nouveau mot de passe" size="large" />
+                <Input.Password placeholder={t('common.newPassword')} size="large" />
               </Form.Item>
               <Form.Item
-                label="Confirmer le nouveau mot de passe"
+                label={t('common.confirmNewPassword')}
               >
-                <Input.Password placeholder="Confirmer le nouveau mot de passe" size="large" />
+                <Input.Password placeholder={t('common.confirmNewPassword')} size="large" />
               </Form.Item>
               <Form.Item style={{ marginBottom: 0 }}>
                 <Button 
@@ -158,7 +158,7 @@ const Settings = () => {
                     fontWeight: 600
                   }}
                 >
-                  Changer le mot de passe
+                  {t('common.changePassword')}
                 </Button>
               </Form.Item>
             </Form>
@@ -169,7 +169,7 @@ const Settings = () => {
             title={
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 24 }}>
                 <DatabaseOutlined style={{ fontSize: 20, color: '#4a7c59' }} />
-                <span style={{ fontSize: 18, fontWeight: 700 }}>Base de données</span>
+                <span style={{ fontSize: 18, fontWeight: 700 }}>{t('common.database')}</span>
               </div>
             }
             style={{ 
@@ -189,7 +189,7 @@ const Settings = () => {
                   color: '#4a7c59'
                 }}
               >
-                Sauvegarder la base de données
+                {t('common.backupDatabase')}
               </Button>
               <Button 
                 size="large" 
@@ -201,7 +201,7 @@ const Settings = () => {
                   color: '#4a7c59'
                 }}
               >
-                Restaurer la base de données
+                {t('common.restoreDatabase')}
               </Button>
             </Space>
           </Card>

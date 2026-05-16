@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import { Table, Button, Space, Card, message, Tabs, Modal, Form, Input, Select, InputNumber, Tag, Row, Col, Typography, Progress } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, ThunderboltOutlined, ClockCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Irrigation = () => {
+  const { t } = useTranslation();
   const [plans, setPlans] = useState([
-    { id: 1, parcelle: { nom: 'Parcelle Nord A1' }, methode: 'Goutte à goutte', frequence: '2 fois par semaine', duree: 45, statut: 'Actif' },
-    { id: 2, parcelle: { nom: 'Parcelle Sud B2' }, methode: 'Aspersion', frequence: 'Quotidienne', duree: 30, statut: 'Actif' },
-    { id: 3, parcelle: { nom: 'Parcelle Est C3' }, methode: 'Goutte à goutte', frequence: 'Hebdomadaire', duree: 60, statut: 'En pause' },
+    { id: 1, parcelle: { nom: 'Parcelle Nord A1' }, methode: 'goutte à goutte', frequence: 'twiceWeekly', duree: 45, statut: 'actif' },
+    { id: 2, parcelle: { nom: 'Parcelle Sud B2' }, methode: 'aspersion', frequence: 'quotidienne', duree: 30, statut: 'actif' },
+    { id: 3, parcelle: { nom: 'Parcelle Est C3' }, methode: 'goutte à goutte', frequence: 'hebdomadaire', duree: 60, statut: 'en pause' },
   ]);
 
   const [cycles, setCycles] = useState([
-    { id: 1, parcelle: { nom: 'Parcelle Nord A1' }, date_debut: '2024-05-01', date_fin: '2024-05-31', statut: 'En cours', progression: 45 },
-    { id: 2, parcelle: { nom: 'Parcelle Sud B2' }, date_debut: '2024-04-15', date_fin: '2024-06-15', statut: 'Planifié', progression: 0 },
-    { id: 3, parcelle: { nom: 'Parcelle Ouest D4' }, date_debut: '2024-03-01', date_fin: '2024-04-30', statut: 'Terminé', progression: 100 },
+    { id: 1, parcelle: { nom: 'Parcelle Nord A1' }, date_debut: '2024-05-01', date_fin: '2024-05-31', statut: 'en cours', progression: 45 },
+    { id: 2, parcelle: { nom: 'Parcelle Sud B2' }, date_debut: '2024-04-15', date_fin: '2024-06-15', statut: 'planifié', progression: 0 },
+    { id: 3, parcelle: { nom: 'Parcelle Ouest D4' }, date_debut: '2024-03-01', date_fin: '2024-04-30', statut: 'terminé', progression: 100 },
   ]);
 
   const [planModalVisible, setPlanModalVisible] = useState(false);
@@ -38,12 +40,12 @@ const Irrigation = () => {
   };
 
   const handleDeletePlan = async (id) => {
-    message.success('Plan supprimé');
+    message.success(t('common.planDeleted'));
     setPlans(plans.filter(p => p.id !== id));
   };
 
   const handleSubmitPlan = async (values) => {
-    message.success(editingPlan ? 'Plan modifié' : 'Plan ajouté');
+    message.success(editingPlan ? t('common.planModified') : t('common.planAdded'));
     setPlanModalVisible(false);
   };
 
@@ -60,12 +62,12 @@ const Irrigation = () => {
   };
 
   const handleDeleteCycle = async (id) => {
-    message.success('Cycle supprimé');
+    message.success(t('common.cycleDeleted'));
     setCycles(cycles.filter(c => c.id !== id));
   };
 
   const handleSubmitCycle = async (values) => {
-    message.success(editingCycle ? 'Cycle modifié' : 'Cycle ajouté');
+    message.success(editingCycle ? t('common.cycleModified') : t('common.cycleAdded'));
     setCycleModalVisible(false);
   };
 
@@ -76,23 +78,23 @@ const Irrigation = () => {
 
   const getStatutBadge = (status) => {
     const colors = {
-      'Actif': '#d1fae5',
-      'Planifié': '#eff6ff',
-      'En cours': '#d1fae5',
-      'Terminé': '#f3f4f6',
-      'En pause': '#fff7ed'
+      'actif': '#d1fae5',
+      'planifié': '#eff6ff',
+      'en cours': '#d1fae5',
+      'terminé': '#f3f4f6',
+      'en pause': '#fff7ed'
     };
     const dotColors = {
-      'Actif': '#4a7c59',
-      'Planifié': '#2563eb',
-      'En cours': '#4a7c59',
-      'Terminé': '#6b7280',
-      'En pause': '#f59e0b'
+      'actif': '#4a7c59',
+      'planifié': '#2563eb',
+      'en cours': '#4a7c59',
+      'terminé': '#6b7280',
+      'en pause': '#f59e0b'
     };
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: colors[status], padding: '4px 12px', borderRadius: 20, width: 'fit-content' }}>
         <div style={{ width: 8, height: 8, borderRadius: 4, background: dotColors[status] }} />
-        <span style={{ fontSize: 13, fontWeight: 500, color: dotColors[status] }}>{status}</span>
+        <span style={{ fontSize: 13, fontWeight: 500, color: dotColors[status] }}>{t(`common.${status}`)}</span>
       </div>
     );
   };
@@ -105,41 +107,43 @@ const Irrigation = () => {
 
   const planColumns = [
     {
-      title: 'ID',
+      title: t('common.id'),
       dataIndex: 'id',
       key: 'id',
       render: (id) => <span style={{ fontWeight: 600, color: '#667085' }}>P{String(id).padStart(3, '0')}</span>
     },
     {
-      title: 'Parcelle',
+      title: t('common.parcelles'),
       dataIndex: 'parcelle',
       key: 'parcelle',
       render: getParcelName,
     },
     {
-      title: 'Méthode',
+      title: t('common.method'),
       dataIndex: 'methode',
       key: 'methode',
+      render: (methode) => t(`common.${methode}`)
     },
     {
-      title: 'Fréquence',
+      title: t('common.frequency'),
       dataIndex: 'frequence',
       key: 'frequence',
+      render: (frequence) => t(`common.${frequence}`)
     },
     {
-      title: 'Durée',
+      title: t('common.duration'),
       dataIndex: 'duree',
       key: 'duree',
       render: (value) => `${value} min`
     },
     {
-      title: 'Statut',
+      title: t('common.status'),
       dataIndex: 'statut',
       key: 'statut',
       render: getStatutBadge
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 120,
@@ -160,29 +164,29 @@ const Irrigation = () => {
 
   const cycleColumns = [
     {
-      title: 'ID',
+      title: t('common.id'),
       dataIndex: 'id',
       key: 'id',
       render: (id) => <span style={{ fontWeight: 600, color: '#667085' }}>C{String(id).padStart(3, '0')}</span>
     },
     {
-      title: 'Parcelle',
+      title: t('common.parcelles'),
       dataIndex: 'parcelle',
       key: 'parcelle',
       render: getParcelName,
     },
     {
-      title: 'Date début',
+      title: t('common.startDate'),
       dataIndex: 'date_debut',
       key: 'date_debut',
     },
     {
-      title: 'Date fin',
+      title: t('common.endDate'),
       dataIndex: 'date_fin',
       key: 'date_fin',
     },
     {
-      title: 'Progression',
+      title: t('common.progress'),
       dataIndex: 'progression',
       key: 'progression',
       render: (val) => (
@@ -198,13 +202,13 @@ const Irrigation = () => {
       )
     },
     {
-      title: 'Statut',
+      title: t('common.status'),
       dataIndex: 'statut',
       key: 'statut',
       render: getStatutBadge
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 120,
@@ -226,7 +230,7 @@ const Irrigation = () => {
   const items = [
     {
       key: '1',
-      label: <span style={{ fontSize: 15, fontWeight: 600 }}>Plans d'irrigation</span>,
+      label: <span style={{ fontSize: 15, fontWeight: 600 }}>{t('common.plans')}</span>,
       children: (
         <>
           <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
@@ -243,7 +247,7 @@ const Irrigation = () => {
                 fontWeight: 600,
               }}
             >
-              Nouveau plan
+              {t('common.newPlan')}
             </Button>
           </div>
           <Table 
@@ -254,7 +258,7 @@ const Irrigation = () => {
             pagination={{
               pageSize: 10,
               showSizeChanger: true,
-              showTotal: (total) => `Total : ${total} plan${total > 1 ? 's' : ''}`,
+              showTotal: (total) => `${t('common.total')} ${total} plan${total > 1 ? 's' : ''}`,
             }}
           />
         </>
@@ -262,7 +266,7 @@ const Irrigation = () => {
     },
     {
       key: '2',
-      label: <span style={{ fontSize: 15, fontWeight: 600 }}>Cycles d'irrigation</span>,
+      label: <span style={{ fontSize: 15, fontWeight: 600 }}>{t('common.cycles')}</span>,
       children: (
         <>
           <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
@@ -279,7 +283,7 @@ const Irrigation = () => {
                 fontWeight: 600,
               }}
             >
-              Nouveau cycle
+              {t('common.newCycle')}
             </Button>
           </div>
           <Table 
@@ -290,7 +294,7 @@ const Irrigation = () => {
             pagination={{
               pageSize: 10,
               showSizeChanger: true,
-              showTotal: (total) => `Total : ${total} cycle${total > 1 ? 's' : ''}`,
+              showTotal: (total) => `${t('common.total')} ${total} cycle${total > 1 ? 's' : ''}`,
             }}
           />
         </>
@@ -303,9 +307,9 @@ const Irrigation = () => {
       <div style={{ marginBottom: 24 }}>
         <div style={{ marginBottom: 32 }}>
           <div>
-            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>Gestion de l'irrigation</Title>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>{t('common.manageIrrigation')}</Title>
             <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-              Gérer les plans et cycles d'irrigation des parcelles
+              {t('common.managePlansCycles')}
             </Paragraph>
           </div>
         </div>
@@ -317,7 +321,7 @@ const Irrigation = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Plans actifs</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.activePlans')}</Text>
                 <ThunderboltOutlined style={{ color: '#4a7c59' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>12</Title>
@@ -329,7 +333,7 @@ const Irrigation = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Cycles en cours</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.activeCycles')}</Text>
                 <ClockCircleOutlined style={{ color: '#f59e0b' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#f59e0b', fontSize: 30 }}>4</Title>
@@ -341,7 +345,7 @@ const Irrigation = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Cycles terminés</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.completedCycles')}</Text>
                 <CheckCircleOutlined style={{ color: '#4a7c59' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#4a7c59', fontSize: 30 }}>28</Title>
@@ -353,7 +357,7 @@ const Irrigation = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Eau consommée</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.waterConsumed')}</Text>
                 <ThunderboltOutlined style={{ color: '#2385bb' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#2385bb', fontSize: 30 }}>1,240 m³</Title>

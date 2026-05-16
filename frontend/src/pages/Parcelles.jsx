@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Card, Typography, Button, Input, Row, Col, Progress, Tag } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, ExperimentOutlined, CloudOutlined, SmileOutlined, TeamOutlined } from '@ant-design/icons';
 import useAuthStore from '../stores/useAuthStore';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Parcelles = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
+  const { t } = useTranslation();
 
   const [parcels, setParcels] = useState([
     {
@@ -92,9 +94,13 @@ const Parcelles = () => {
       'Fair': '#ea580c',
       'Needs Check': '#dc2626'
     };
+    const healthKey = health === 'Excellent' ? 'excellent' :
+                      health === 'Good' ? 'good' :
+                      health === 'Fair' ? 'fair' :
+                      'needsCheck';
     return (
       <Tag color={colors[health]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[health], fontWeight: 500 }}>{health}</span>
+        <span style={{ color: textColors[health], fontWeight: 500 }}>{t(`common.${healthKey}`)}</span>
       </Tag>
     );
   };
@@ -108,9 +114,10 @@ const Parcelles = () => {
       'Operational': '#059669',
       'Needs Check': '#ea580c'
     };
+    const statusKey = status === 'Operational' ? 'operational' : 'needsCheck';
     return (
       <Tag color={colors[status]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[status], fontWeight: 500 }}>{status}</span>
+        <span style={{ color: textColors[status], fontWeight: 500 }}>{t(`common.${statusKey}`)}</span>
       </Tag>
     );
   };
@@ -126,10 +133,10 @@ const Parcelles = () => {
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>
-            Assigned Parcels
+            {t('common.assignedParcels')}
           </Title>
           <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-            View and monitor all your assigned agricultural parcels
+            {t('common.viewAndMonitorParcels')}
           </Paragraph>
         </div>
         <Button 
@@ -145,7 +152,7 @@ const Parcelles = () => {
             height: 44
           }}
         >
-          View Map
+          {t('common.viewMap')}
         </Button>
       </div>
 
@@ -159,7 +166,7 @@ const Parcelles = () => {
         styles={{ body: { padding: 24 } }}
       >
         <Input 
-          placeholder="Search parcels by ID, name, or crop..." 
+          placeholder={t('common.searchParcels')}
           prefix={<SearchOutlined style={{ color: '#9ca3af' }} />}
           size="large"
           value={searchText}
@@ -179,7 +186,7 @@ const Parcelles = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Total Parcels
+              {t('common.totalParcels')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
               {filteredParcels.length}
@@ -196,10 +203,10 @@ const Parcelles = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Total Area
+              {t('common.totalArea')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
-              {parcels.reduce((sum, p) => sum + parseFloat(p.area), 0).toFixed(1)} ha
+              {parcels.reduce((sum, p) => sum + parseFloat(p.area), 0).toFixed(1)} {t('common.hectares')}
             </Title>
           </Card>
         </Col>
@@ -215,7 +222,7 @@ const Parcelles = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-                  Active Crops
+                  {t('common.activeCrops')}
                 </Text>
                 <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
                   {[...new Set(parcels.map(p => p.culture))].length}
@@ -235,7 +242,7 @@ const Parcelles = () => {
             styles={{ body: { padding: 24 } }}
           >
             <Text style={{ color: '#666', fontSize: 14, display: 'block', marginBottom: 12 }}>
-              Avg. Soil Moisture
+              {t('common.avgSoilMoisture')}
             </Text>
             <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 32 }}>
               {Math.round(parcels.reduce((sum, p) => sum + p.moisture, 0) / parcels.length)}%
@@ -274,15 +281,15 @@ const Parcelles = () => {
               <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col xs={12}>
                   <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Area
+                    {t('common.area')}
                   </Text>
                   <Text style={{ color: '#1a1a1a', fontSize: 16, fontWeight: 600 }}>
-                    {parcel.area} hectares
+                    {parcel.area} {t('common.hectares')}
                   </Text>
                 </Col>
                 <Col xs={12}>
                   <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Crop
+                    {t('common.crop')}
                   </Text>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <ExperimentOutlined style={{ color: '#4a7c59' }} />
@@ -296,7 +303,7 @@ const Parcelles = () => {
               <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col xs={12}>
                   <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Soil Type
+                    {t('common.soilType')}
                   </Text>
                   <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 500 }}>
                     {parcel.soilType}
@@ -304,7 +311,7 @@ const Parcelles = () => {
                 </Col>
                 <Col xs={12}>
                   <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
-                    Health
+                    {t('common.health')}
                   </Text>
                   {getHealthTag(parcel.health)}
                 </Col>
@@ -315,7 +322,7 @@ const Parcelles = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <CloudOutlined style={{ color: '#667085' }} />
                     <Text style={{ color: '#667085', fontSize: 13 }}>
-                      Soil Moisture
+                      {t('common.soilMoisture')}
                     </Text>
                   </div>
                   <Text style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 600 }}>
@@ -339,10 +346,10 @@ const Parcelles = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <Text style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 600, display: 'block' }}>
-                      Irrigation Status
+                      {t('common.irrigationStatus')}
                     </Text>
                     <Text type="secondary" style={{ fontSize: 12, color: '#667085' }}>
-                      Last: {parcel.irrigationLast}
+                      {t('common.last')}: {parcel.irrigationLast}
                     </Text>
                   </div>
                   {getIrrigationStatusTag(parcel.irrigationStatus)}
@@ -363,7 +370,7 @@ const Parcelles = () => {
                       fontWeight: 500
                     }}
                   >
-                    View Details
+                    {t('common.viewDetails')}
                   </Button>
                 </Col>
                 <Col xs={12}>
@@ -377,7 +384,7 @@ const Parcelles = () => {
                       fontWeight: 600
                     }}
                   >
-                    View Crops
+                    {t('common.viewCrops')}
                   </Button>
                 </Col>
               </Row>
@@ -391,14 +398,14 @@ const Parcelles = () => {
   const renderAdminParcels = () => (
     <div style={{ padding: '24px', background: '#f6faf4', minHeight: '100vh' }}>
       <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-        Gestion des parcelles
+        {t('common.manageParcels')}
       </Title>
       <Paragraph type="secondary" style={{ marginBottom: 32 }}>
-        Gérer toutes les parcelles agricoles du système
+        {t('common.manageAllParcels')}
       </Paragraph>
       <Card>
-        <Title level={4}>Admin Parcels Page</Title>
-        <Paragraph>This is the admin view for parcels.</Paragraph>
+        <Title level={4}>{t('common.adminParcelsPage')}</Title>
+        <Paragraph>{t('common.thisIsAdminViewParcels')}</Paragraph>
       </Card>
     </div>
   );

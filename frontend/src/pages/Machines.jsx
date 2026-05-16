@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Table, Button, Space, Card, message, Modal, Form, Input, Select, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, TruckOutlined, ToolOutlined } from '@ant-design/icons';
 import { Row, Col, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Machines = () => {
+  const { t } = useTranslation();
   const [machines, setMachines] = useState([
     { id: 1, nom: 'Tracteur John Deere', type: 'Tracteur', marque: 'John Deere 6120M', assigne: 'Parcelle A1', localisation: 'Casablanca', maintenance: '15/04/2024', statut: 'Actif' },
     { id: 2, nom: 'Pulvérisateur agricole', type: 'Pulvérisateur', marque: 'Amazone UX5200', assigne: 'Parcelle B2', localisation: 'Rabat', maintenance: '20/04/2024', statut: 'Actif' },
@@ -33,12 +35,12 @@ const Machines = () => {
   };
 
   const handleDelete = async (id) => {
-    message.success('Machine supprimée');
+    message.success(t('common.machineDeleted'));
     setMachines(machines.filter(m => m.id !== id));
   };
 
   const handleSubmit = async (values) => {
-    message.success(editingMachine ? 'Machine modifiée' : 'Machine ajoutée');
+    message.success(editingMachine ? t('common.machineModified') : t('common.machineAdded'));
     setModalVisible(false);
   };
 
@@ -53,23 +55,26 @@ const Machines = () => {
       'Attention': '#f59e0b',
       'Inactif': '#6b7280'
     };
+    const statusKey = status === 'Actif' ? 'active' :
+                      status === 'Attention' ? 'attention' :
+                      'inactive';
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: colors[status], padding: '4px 12px', borderRadius: 20, width: 'fit-content' }}>
         <div style={{ width: 8, height: 8, borderRadius: 4, background: dotColors[status] }} />
-        <span style={{ fontSize: 13, fontWeight: 500, color: dotColors[status] }}>{status}</span>
+        <span style={{ fontSize: 13, fontWeight: 500, color: dotColors[status] }}>{t(`common.${statusKey}`)}</span>
       </div>
     );
   };
 
   const columns = [
     {
-      title: 'ID',
+      title: t('common.id'),
       dataIndex: 'id',
       key: 'id',
       render: (id) => <span style={{ fontWeight: 600, color: '#667085' }}>M{String(id).padStart(3, '0')}</span>
     },
     {
-      title: 'Nom',
+      title: t('common.name'),
       dataIndex: 'nom',
       key: 'nom',
       render: (text) => (
@@ -80,38 +85,38 @@ const Machines = () => {
       ),
     },
     {
-      title: 'Type',
+      title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
     },
     {
-      title: 'Marque/Modèle',
+      title: t('common.brandModel'),
       dataIndex: 'marque',
       key: 'marque',
     },
     {
-      title: 'Assigné à',
+      title: t('common.assignedTo'),
       dataIndex: 'assigne',
       key: 'assigne',
     },
     {
-      title: 'Localisation',
+      title: t('common.location'),
       dataIndex: 'localisation',
       key: 'localisation',
     },
     {
-      title: 'Dernière maintenance',
+      title: t('common.lastMaintenance'),
       dataIndex: 'maintenance',
       key: 'maintenance',
     },
     {
-      title: 'Statut',
+      title: t('common.status'),
       dataIndex: 'statut',
       key: 'statut',
       render: getStatutBadge
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
       width: 100,
@@ -135,9 +140,9 @@ const Machines = () => {
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
           <div>
-            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>Gestion des machines</Title>
+            <Title level={2} style={{ margin: 0, color: '#1a1a1a' }}>{t('common.manageMachines')}</Title>
             <Paragraph type="secondary" style={{ margin: '8px 0 0', fontSize: 15 }}>
-              Gérer l'équipement et les machines agricoles
+              {t('common.manageEquipment')}
             </Paragraph>
           </div>
           <Button 
@@ -154,7 +159,7 @@ const Machines = () => {
               height: 48
             }}
           >
-            Nouvelle machine
+            {t('common.newMachine')}
           </Button>
         </div>
 
@@ -165,7 +170,7 @@ const Machines = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Total machines</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.totalMachines')}</Text>
                 <TruckOutlined style={{ color: '#4a7c59' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>24</Title>
@@ -177,7 +182,7 @@ const Machines = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>En service</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.inService')}</Text>
                 <div style={{ width: 10, height: 10, borderRadius: 5, background: '#4a7c59' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#4a7c59', fontSize: 30 }}>18</Title>
@@ -189,7 +194,7 @@ const Machines = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Maintenance requise</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.maintenanceRequired')}</Text>
                 <ToolOutlined style={{ color: '#f59e0b' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#f59e0b', fontSize: 30 }}>4</Title>
@@ -201,7 +206,7 @@ const Machines = () => {
               styles={{ body: { padding: 20 } }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <Text type="secondary" style={{ fontSize: 14 }}>Hors service</Text>
+                <Text type="secondary" style={{ fontSize: 14 }}>{t('common.outOfService')}</Text>
                 <div style={{ width: 10, height: 10, borderRadius: 5, background: '#c43a31' }} />
               </div>
               <Title level={2} style={{ margin: 0, color: '#1a1a1a', fontSize: 30 }}>2</Title>
@@ -226,7 +231,7 @@ const Machines = () => {
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
-            showTotal: (total) => `Total : ${total} machine${total > 1 ? 's' : ''}`,
+            showTotal: (total) => `${t('common.total')} : ${total} machine${total > 1 ? 's' : ''}`,
           }}
         />
       </Card>
