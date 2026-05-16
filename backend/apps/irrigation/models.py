@@ -1,10 +1,11 @@
 """
-App Irrigation - Modèle PlanIrrigation + CycleIrrigation
+App Irrigation - Modèle PlanIrrigation + CycleIrrigation + IoTSensor + IoTAlert
 """
 
 from django.db import models
 from django.conf import settings
 from apps.parcelles.models import Parcelle
+from django.utils import timezone
 
 
 class PlanIrrigation(models.Model):
@@ -82,3 +83,63 @@ class CycleIrrigation(models.Model):
 
     def __str__(self):
         return f"Cycle {self.plan.parcelle.nom} - {self.date_planifiee}"
+
+
+class IoTSensor(models.Model):
+    STATUS_CHOICES = [
+        ('ACTIVE', 'Active'),
+        ('INACTIVE', 'Inactive'),
+    ]
+
+    sensor_name = models.CharField(max_length=100)
+    parcelle = models.ForeignKey(
+        Parcelle,
+        on_delete=models.CASCADE,
+        related_name='iot_sensors'
+    )
+    moisture_level = models.FloatField(help_text="Soil moisture level (%)")
+    battery_level = models.FloatField(help_text="Sensor battery level (%)")
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='ACTIVE'
+    )
+    last_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'iot_sensors'
+        verbose_name = 'IoT Sensor'
+        verbose_name_plural = 'IoT Sensors'
+
+    def __str__(self):
+        return f"{self.sensor_name} - {self.parcelle.nom}"
+
+
+class IoTAlert(models.Model):
+    ALERT_TYPE_CHOICES = [
+        ('CRITICAL', 'Critical'),
+        ('WARNING', 'Warning'),
+    ]
+
+    sensor = models.ForeignKey(
+        IoTSensor,
+        on_delete=models.CASCADE,
+        related_name='alerts'
+    )
+    message = models.TextField()
+    alert_type = models.CharField(
+        max_length=20,
+        choices=ALERT_TYPE_CHOICES,
+        default='CRITICAL'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'iot_alerts'
+        verbose_name = 'IoT Alert'
+        verbose_name_plural = 'IoT Alerts'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.alert_type} - {self.sensor.sensor_name}"

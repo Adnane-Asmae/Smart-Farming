@@ -1,37 +1,109 @@
 import { useState } from 'react';
-import { Table, Button, Space, Card, message, Select, DatePicker, Row, Col, Typography } from 'antd';
-import { FileTextOutlined, DownloadOutlined, PlusOutlined, CalendarOutlined, FilterOutlined } from '@ant-design/icons';
+import { Table, Button, Space, Card, message, Select, DatePicker, Row, Col, Typography, Modal, Tag, Descriptions, Divider } from 'antd';
+import { FileTextOutlined, DownloadOutlined, PlusOutlined, CalendarOutlined, FilterOutlined, EyeOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../utils/date';
+import { getReportName } from '../utils/reportNames';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Reports = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  
   const [reports, setReports] = useState([
-    { id: 1, nom: 'Rapport mensuel - Avril 2024', type: 'Mensuel', date: '01/05/2024', taille: '2.4 MB' },
-    { id: 2, nom: 'Rapport hebdomadaire - S19', type: 'Hebdomadaire', date: '12/05/2024', taille: '1.2 MB' },
-    { id: 3, nom: 'Rapport annuel 2023', type: 'Annuel', date: '15/01/2024', taille: '8.7 MB' },
+    { 
+      id: 1, 
+      type: 'monthly', 
+      month: 4, 
+      year: 2024, 
+      date: '2024-05-01', 
+      taille: '2.4 MB',
+      data: {
+        cropsHarvested: 12,
+        waterConsumed: 1240,
+        interventions: 45,
+        yield: 89,
+        topCrops: ['Tomatoes', 'Wheat', 'Lettuce'],
+        avgSoilMoisture: 58
+      }
+    },
+    { 
+      id: 2, 
+      type: 'weekly', 
+      week: 19, 
+      year: 2024, 
+      date: '2024-05-12', 
+      taille: '1.2 MB',
+      data: {
+        cropsHarvested: 3,
+        waterConsumed: 280,
+        interventions: 12,
+        yield: 21,
+        topCrops: ['Tomatoes'],
+        avgSoilMoisture: 62
+      }
+    },
+    { 
+      id: 3, 
+      type: 'annual', 
+      year: 2023, 
+      date: '2024-01-15', 
+      taille: '8.7 MB',
+      data: {
+        cropsHarvested: 145,
+        waterConsumed: 14880,
+        interventions: 520,
+        yield: 1050,
+        topCrops: ['Tomatoes', 'Wheat', 'Corn', 'Lettuce', 'Barley'],
+        avgSoilMoisture: 55
+      }
+    },
   ]);
 
+  const [viewReportVisible, setViewReportVisible] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+
   const handleGenerate = () => {
+    const newReport = {
+      id: Date.now(),
+      type: 'weekly',
+      week: 20,
+      year: 2024,
+      date: new Date().toISOString().split('T')[0],
+      taille: `${(Math.random() * 2 + 0.5).toFixed(1)} MB`,
+      data: {
+        cropsHarvested: Math.floor(Math.random() * 10),
+        waterConsumed: Math.floor(Math.random() * 500),
+        interventions: Math.floor(Math.random() * 20),
+        yield: Math.floor(Math.random() * 30),
+        topCrops: ['Tomatoes', 'Corn'],
+        avgSoilMoisture: Math.floor(Math.random() * 40 + 40)
+      }
+    };
+    setReports([newReport, ...reports]);
     message.success(t('common.reportGenerated'));
   };
 
   const handleDownload = (record) => {
-    message.success(`${t('common.downloading')} ${record.nom}...`);
+    message.success(`${t('common.downloading')} ${getReportName(record, i18n.language)}...`);
+  };
+
+  const handleViewReport = (record) => {
+    setSelectedReport(record);
+    setViewReportVisible(true);
   };
 
   const columns = [
     {
       title: t('common.reportName'),
-      dataIndex: 'nom',
+      dataIndex: 'type',
       key: 'nom',
-      render: (text) => (
+      render: (text, record) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <FileTextOutlined style={{ color: '#c43a31', fontSize: 20 }} />
-          <span style={{ fontWeight: 500 }}>{text}</span>
+          <span style={{ fontWeight: 500 }}>{getReportName(record, i18n.language)}</span>
         </div>
       ),
     },
@@ -39,13 +111,20 @@ const Reports = () => {
       title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
-      render: (text) => <Text type="secondary" style={{ fontSize: 14 }}>{text}</Text>
+      render: (type) => (
+        <Tag 
+          color={type === 'monthly' ? '#dbeafe' : type === 'weekly' ? '#d1fae5' : '#f3e8ff'}
+          style={{ border: 'none' }}
+        >
+          {t(`reports.${type}`)}
+        </Tag>
+      ),
     },
     {
       title: t('common.generationDate'),
       dataIndex: 'date',
       key: 'date',
-      render: (text) => <Text type="secondary" style={{ fontSize: 14 }}>{text}</Text>
+      render: (date) => <Text type="secondary" style={{ fontSize: 14 }}>{formatDate(date, i18n.language)}</Text>
     },
     {
       title: t('common.size'),
@@ -57,22 +136,30 @@ const Reports = () => {
       title: t('common.actions'),
       key: 'actions',
       fixed: 'right',
-      width: 200,
+      width: 220,
       render: (_unused, record) => (
-        <Button 
-          type="primary" 
-          icon={<DownloadOutlined />}
-          onClick={() => handleDownload(record)}
-          style={{ 
-            background: '#2d5a3d',
-            border: 'none',
-            borderRadius: 8,
-            fontSize: 14,
-            fontWeight: 600
-          }}
-        >
-          {t('common.downloadPdf')}
-        </Button>
+        <Space size="small" orientation="horizontal">
+          <Button 
+            icon={<EyeOutlined />}
+            onClick={() => handleViewReport(record)}
+          >
+            View
+          </Button>
+          <Button 
+            type="primary" 
+            icon={<DownloadOutlined />}
+            onClick={() => handleDownload(record)}
+            style={{ 
+              background: '#2d5a3d',
+              border: 'none',
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 600
+            }}
+          >
+            {t('common.downloadPdf')}
+          </Button>
+        </Space>
       ),
     },
   ];
@@ -206,6 +293,67 @@ const Reports = () => {
           pagination={false}
         />
       </Card>
+
+      <Modal
+        title={selectedReport ? getReportName(selectedReport, i18n.language) : 'Report'}
+        open={viewReportVisible}
+        onCancel={() => setViewReportVisible(false)}
+        footer={[
+          <Button key="download" type="primary" onClick={() => handleDownload(selectedReport)}>
+            <DownloadOutlined /> Download PDF
+          </Button>
+        ]}
+        width={800}
+      >
+        {selectedReport && selectedReport.data && (
+          <div style={{ marginTop: 16 }}>
+            <Descriptions bordered column={2} size="middle">
+              <Descriptions.Item label="Report Type">
+                <Tag color={selectedReport.type === 'monthly' ? '#dbeafe' : selectedReport.type === 'weekly' ? '#d1fae5' : '#f3e8ff'}>
+                  {t(`reports.${selectedReport.type}`)}
+                </Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Generated Date">
+                {formatDate(selectedReport.date, i18n.language)}
+              </Descriptions.Item>
+              <Descriptions.Item label="Crops Harvested">
+                <span style={{ fontWeight: 600, fontSize: 16 }}>{selectedReport.data.cropsHarvested}</span>
+              </Descriptions.Item>
+              <Descriptions.Item label="Water Consumed">
+                <span style={{ fontWeight: 600, fontSize: 16 }}>{selectedReport.data.waterConsumed} m³</span>
+              </Descriptions.Item>
+              <Descriptions.Item label="Interventions">
+                <span style={{ fontWeight: 600, fontSize: 16 }}>{selectedReport.data.interventions}</span>
+              </Descriptions.Item>
+              <Descriptions.Item label="Total Yield">
+                <span style={{ fontWeight: 600, fontSize: 16 }}>{selectedReport.data.yield} tons</span>
+              </Descriptions.Item>
+              <Descriptions.Item label="Average Soil Moisture" span={2}>
+                <span style={{ fontWeight: 600, fontSize: 16, color: selectedReport.data.avgSoilMoisture < 40 ? '#c43a31' : '#4a7c59' }}>
+                  {selectedReport.data.avgSoilMoisture}%
+                </span>
+              </Descriptions.Item>
+            </Descriptions>
+            
+            <Divider style={{ margin: '24px 0' }} />
+            
+            <div>
+              <Title level={4} style={{ marginBottom: 12 }}>Top Crops</Title>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {selectedReport.data.topCrops.map((crop, i) => (
+                  <Tag 
+                    key={i} 
+                    color="#f0fdf4" 
+                    style={{ padding: '8px 16px', fontSize: 14, fontWeight: 500 }}
+                  >
+                    {crop}
+                  </Tag>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

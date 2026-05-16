@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, Typography, Row, Col, Button, Progress, Tag, Table, Space } from 'antd';
 import { 
   TeamOutlined, 
@@ -18,52 +19,55 @@ import {
   CheckOutlined,
   CloudOutlined
 } from '@ant-design/icons';
+import { PromoVideo } from '../components/PromoVideo';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import useAuthStore from '../stores/useAuthStore';
 import { useTranslation } from 'react-i18next';
 import { useTranslatedContent } from '../hooks/useTranslatedContent';
+import { formatDate } from '../utils/date';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Dashboard = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [promoVideoVisible, setPromoVideoVisible] = useState(false);
   const { tContent } = useTranslatedContent();
 
   const waterData = [
-    { name: 'Lun', value: 2500 },
-    { name: 'Mar', value: 2200 },
-    { name: 'Mer', value: 2300 },
-    { name: 'Jeu', value: 2600 },
-    { name: 'Ven', value: 2000 },
-    { name: 'Sam', value: 2400 },
-    { name: 'Dim', value: 2250 },
+    { name: t('days.Mon'), value: 2500 },
+    { name: t('days.Mar'), value: 2200 },
+    { name: t('days.Mer'), value: 2300 },
+    { name: t('days.Jeu'), value: 2600 },
+    { name: t('days.Ven'), value: 2000 },
+    { name: t('days.Sam'), value: 2400 },
+    { name: t('days.Dim'), value: 2250 },
   ];
 
   const interventionsData = [
-    { name: 'Jan', value: 12 },
-    { name: 'Fév', value: 18 },
-    { name: 'Mar', value: 14 },
-    { name: 'Avr', value: 25 },
-    { name: 'Mai', value: 21 },
+    { name: t('months.Jan'), value: 12 },
+    { name: t('months.Fév'), value: 18 },
+    { name: t('months.Mar'), value: 14 },
+    { name: t('months.Avr'), value: 25 },
+    { name: t('months.Mai'), value: 21 },
   ];
 
   const cropsData = [
-    { name: 'Blé', value: 35 },
-    { name: 'Orge', value: 20 },
-    { name: 'Tomates', value: 30 },
-    { name: 'Oliviers', value: 15 },
+    { name: t('crops.wheat'), value: 35 },
+    { name: t('crops.barley'), value: 20 },
+    { name: t('crops.tomatoes'), value: 30 },
+    { name: t('crops.olives'), value: 15 },
   ];
 
   const weeklyInterventions = [
-    { name: 'Mon', value: 7 },
+    { name: t('days.Mon'), value: 7 },
     { name: 'Tue', value: 5 },
-    { name: 'Wed', value: 8 },
-    { name: 'Thu', value: 6 },
-    { name: 'Fri', value: 9 },
-    { name: 'Sat', value: 4 },
-    { name: 'Sun', value: 3 },
+    { name: t('days.Mer'), value: 8 },
+    { name: t('days.Jeu'), value: 6 },
+    { name: t('days.Ven'), value: 9 },
+    { name: t('days.Sam'), value: 4 },
+    { name: t('days.Dim'), value: 3 },
   ];
 
   const irrigationLevels = [
@@ -76,58 +80,91 @@ const Dashboard = () => {
   ];
 
   const recentInterventions = [
-    { id: 'INT-2024-145', type: 'Pest Control Application', parcelle: 'Parcel A-12', culture: 'Tomatoes', status: 'In Progress', priority: 'High', date: '2024-05-15' },
-    { id: 'INT-2024-143', type: 'Fertilization', parcelle: 'Parcel B-5', culture: 'Wheat', status: 'To Do', priority: 'Medium', date: '2024-05-16' },
-    { id: 'INT-2024-141', type: 'Soil Testing', parcelle: 'Parcel C-8', culture: 'Corn', status: 'To Do', priority: 'Low', date: '2024-05-18' },
-    { id: 'INT-2024-139', type: 'Harvesting', parcelle: 'Parcel D-3', culture: 'Lettuce', status: 'Completed', priority: 'High', date: '2024-05-13' },
+    { id: 'INT-2024-145', typeKey: 'pest_control', parcelle: 'Parcel A-12', cultureKey: 'tomatoes', statusKey: 'inProgress', priority: 'High', date: '2024-05-15' },
+    { id: 'INT-2024-143', typeKey: 'fertilization', parcelle: 'Parcel B-5', cultureKey: 'wheat', statusKey: 'toDo', priority: 'Medium', date: '2024-05-16' },
+    { id: 'INT-2024-141', typeKey: 'soil_testing', parcelle: 'Parcel C-8', cultureKey: 'corn', statusKey: 'toDo', priority: 'Low', date: '2024-05-18' },
+    { id: 'INT-2024-139', typeKey: 'harvesting', parcelle: 'Parcel D-3', cultureKey: 'tomatoes', statusKey: 'completed', priority: 'High', date: '2024-05-13' },
   ];
 
   const COLORS = ['#4a7c59', '#66bb6a', '#81c784', '#a5d6a7'];
 
   const getPriorityTag = (priority) => {
+    const priorityMap = {
+      'High': 'high',
+      'Medium': 'medium',
+      'Low': 'low'
+    };
     const colors = {
-      'High': '#fee2e2',
-      'Medium': '#fff7ed',
-      'Low': '#d1fae5'
+      'high': '#fee2e2',
+      'medium': '#fff7ed',
+      'low': '#d1fae5'
     };
     const textColors = {
-      'High': '#dc2626',
-      'Medium': '#ea580c',
-      'Low': '#059669'
+      'high': '#dc2626',
+      'medium': '#ea580c',
+      'low': '#059669'
     };
+    const key = priorityMap[priority] || priority;
     return (
-      <Tag color={colors[priority]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[priority], fontWeight: 500 }}>{priority}</span>
+      <Tag color={colors[key]} style={{ border: 'none' }}>
+        <span style={{ color: textColors[key], fontWeight: 500 }}>{t(`common.${key}`)}</span>
       </Tag>
     );
   };
 
   const getStatusTag = (status) => {
     const colors = {
-      'In Progress': '#dbeafe',
-      'To Do': '#f3f4f6',
-      'Completed': '#d1fae5'
+      'inProgress': '#dbeafe',
+      'toDo': '#f3f4f6',
+      'completed': '#d1fae5',
+      'pending': '#fef3c7',
+      'active': '#dcfce7',
+      'cancelled': '#fee2e2',
+      'scheduled': '#eff6ff'
     };
     const textColors = {
-      'In Progress': '#2563eb',
-      'To Do': '#6b7280',
-      'Completed': '#059669'
+      'inProgress': '#2563eb',
+      'toDo': '#6b7280',
+      'completed': '#059669',
+      'pending': '#d97706',
+      'active': '#16a34a',
+      'cancelled': '#dc2626',
+      'scheduled': '#2563eb'
     };
+    const displayStatus = typeof status === 'string' && status.includes(' ') ? status : t(`status.${status}`);
+    const key = typeof status === 'string' && !status.includes(' ') ? status : 'inProgress';
     return (
-      <Tag color={colors[status]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[status], fontWeight: 500 }}>{status}</span>
+      <Tag color={colors[key]} style={{ border: 'none' }}>
+        <span style={{ color: textColors[key], fontWeight: 500 }}>{displayStatus}</span>
       </Tag>
     );
   };
 
   const renderAdminDashboard = () => (
     <>
-      <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
-        {t('common.adminDashboard')}
-      </Title>
-      <Paragraph type="secondary" style={{ marginBottom: 32 }}>
-        {t('common.completeOverview')}
-      </Paragraph>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <Title level={2} style={{ marginBottom: 8, color: '#1a1a1a' }}>
+            {t('common.adminDashboard')}
+          </Title>
+          <Paragraph type="secondary" style={{ margin: 0, fontSize: 15 }}>
+            {t('common.completeOverview')}
+          </Paragraph>
+        </div>
+        <Button 
+          type="primary"
+          icon={<PlayCircleOutlined />}
+          onClick={() => setPromoVideoVisible(true)}
+          style={{ 
+            background: 'linear-gradient(135deg, #4a7c59 0%, #2d5a3d 100%)',
+            border: 'none',
+            borderRadius: 10,
+            fontWeight: 600
+          }}
+        >
+          Voir la présentation
+        </Button>
+      </div>
 
       {/* Stats Cards */}
       <Row gutter={[24, 24]} style={{ marginBottom: 32 }}>
@@ -550,7 +587,7 @@ const Dashboard = () => {
                         borderRadius: 8, 
                         border: 'none', 
                         boxShadow: '0 4px 12px rgba(0,0,0,0.1)' 
-                      }} 
+                      }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -634,9 +671,24 @@ const Dashboard = () => {
             {t('common.welcomeBack')}
           </Paragraph>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <CalendarOutlined style={{ color: '#667085', fontSize: 18 }} />
-          <Text style={{ fontSize: 15, color: '#667085' }}>Thursday, May 14, 2026</Text>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <Button 
+            type="primary"
+            icon={<PlayCircleOutlined />}
+            onClick={() => setPromoVideoVisible(true)}
+            style={{ 
+              background: 'linear-gradient(135deg, #4a7c59 0%, #2d5a3d 100%)',
+              border: 'none',
+              borderRadius: 10,
+              fontWeight: 600
+            }}
+          >
+            Voir la présentation
+          </Button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <CalendarOutlined style={{ color: '#667085', fontSize: 18 }} />
+            <Text style={{ fontSize: 15, color: '#667085' }}>{formatDate('2026-05-14', i18n.language)}</Text>
+          </div>
         </div>
       </div>
 
@@ -881,8 +933,9 @@ const Dashboard = () => {
                 },
                 {
                   title: t('common.intervention'),
-                  dataIndex: 'type',
+                  dataIndex: 'typeKey',
                   key: 'type',
+                  render: (typeKey) => t(`interventionTypes.${typeKey}`)
                 },
                 {
                   title: t('common.parcelCrop'),
@@ -894,15 +947,15 @@ const Dashboard = () => {
                         <EnvironmentOutlined style={{ color: '#667085' }} />
                         <Text style={{ fontWeight: 500 }}>{parcelle}</Text>
                       </div>
-                      <Text type="secondary" style={{ fontSize: 13, marginLeft: 24 }}>{record.culture}</Text>
+                      <Text type="secondary" style={{ fontSize: 13, marginLeft: 24 }}>{t(`crops.${record.cultureKey}`)}</Text>
                     </div>
                   )
                 },
                 {
                   title: t('common.status'),
-                  dataIndex: 'status',
+                  dataIndex: 'statusKey',
                   key: 'status',
-                  render: getStatusTag
+                  render: (statusKey) => getStatusTag(statusKey)
                 },
                 {
                   title: t('common.priority'),
@@ -914,6 +967,7 @@ const Dashboard = () => {
                   title: t('common.dueDate'),
                   dataIndex: 'date',
                   key: 'date',
+                  render: (date) => formatDate(date, i18n.language)
                 },
                 {
                   title: t('common.action'),
@@ -1035,6 +1089,11 @@ const Dashboard = () => {
   return (
     <div style={{ padding: '24px', background: '#f9fafb', minHeight: '100vh' }}>
       {(userRole === 'ADMIN') ? renderAdminDashboard() : renderTechnicianDashboard()}
+      
+      <PromoVideo 
+        open={promoVideoVisible} 
+        onClose={() => setPromoVideoVisible(false)} 
+      />
     </div>
   );
 };

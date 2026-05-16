@@ -3,7 +3,7 @@ App Irrigation - Serializers
 """
 
 from rest_framework import serializers
-from .models import PlanIrrigation, CycleIrrigation
+from .models import PlanIrrigation, CycleIrrigation, IoTSensor, IoTAlert
 
 
 class PlanIrrigationSerializer(serializers.ModelSerializer):
@@ -33,3 +33,28 @@ class CycleIrrigationSerializer(serializers.ModelSerializer):
             'technicien', 'technicien_nom',
         ]
         read_only_fields = ['id', 'plan_parcelle', 'technicien_nom']
+
+
+class IoTSensorSerializer(serializers.ModelSerializer):
+    parcelle_nom = serializers.CharField(source='parcelle.nom', read_only=True)
+
+    class Meta:
+        model = IoTSensor
+        fields = [
+            'id', 'sensor_name', 'parcelle', 'parcelle_nom',
+            'moisture_level', 'battery_level', 'status', 'last_update'
+        ]
+        read_only_fields = ['id', 'last_update']
+
+
+class IoTAlertSerializer(serializers.ModelSerializer):
+    sensor_name = serializers.CharField(source='sensor.sensor_name', read_only=True)
+    parcelle_nom = serializers.CharField(source='sensor.parcelle.nom', read_only=True)
+
+    class Meta:
+        model = IoTAlert
+        fields = [
+            'id', 'sensor', 'sensor_name', 'parcelle_nom',
+            'message', 'alert_type', 'created_at', 'resolved'
+        ]
+        read_only_fields = ['id', 'created_at']

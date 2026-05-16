@@ -458,7 +458,128 @@
     "activeCycles": "الدورات النشطة",
     "completedCycles": "الدورات المكتملة",
     "waterConsumed": "المياه المستهلكة",
-    "twiceWeekly": "مرتين في الأسبوع"
+    "twiceWeekly": "مرتين في الأسبوع",
+    "lastUpdate": "آخر تحديث",
+    "recommendation": "توصية"
+  },
+  "parcelles": {
+    "title": "القطع",
+    "add": "إضافة قطعة",
+    "edit": "تعديل القطعة",
+    "name": "الاسم",
+    "area": "المساحة (هكتار)",
+    "location": "الموقع",
+    "soilType": "نوع التربة",
+    "farmer": "فلاح",
+    "creationDate": "تاريخ الإنشاء",
+    "description": "الوصف",
+    "clay": "طيني",
+    "sandy": "رملي",
+    "loamy": "طمي رملي",
+    "calcareous": "جيري",
+    "peaty": "بيئي",
+    "other": "أخرى",
+    "meknes": "مكناس",
+    "agadir": "أكادير",
+    "marrakech": "مراكش",
+    "soussMassa": "سوس ماسة",
+    "gharb": "الغرب",
+    "casablanca": "الدار البيضاء",
+    "rabat": "الرباط",
+    "fes": "فاس",
+    "tanger": "طنجة",
+    "oujda": "وجدة",
+    "enterName": "يرجى إدخال الاسم",
+    "enterArea": "يرجى إدخال المساحة",
+    "enterLocation": "يرجى إدخال الموقع",
+    "selectSoilType": "يرجى اختيار نوع التربة",
+    "selectFarmer": "يرجى اختيار الفلاح"
+  },
+  "cultures": {
+    "title": "المحاصيل",
+    "add": "إضافة محصول",
+    "edit": "تعديل المحصول",
+    "name": "الاسم",
+    "type": "النوع",
+    "variety": "الصنف",
+    "plantingDate": "تاريخ الزراعة",
+    "expectedHarvest": "الحصاد المتوقع",
+    "parcel": "القطعة",
+    "status": "الحالة",
+    "enterName": "يرجى إدخال الاسم",
+    "enterType": "يرجى إدخال النوع",
+    "selectParcel": "يرجى اختيار القطعة",
+    "selectStatus": "يرجى اختيار الحالة"
+  },
+  "machines": {
+    "title": "الآلات",
+    "add": "إضافة آلة",
+    "edit": "تعديل الآلة",
+    "name": "الاسم",
+    "type": "النوع",
+    "model": "النموذج",
+    "status": "الحالة",
+    "available": "متاح",
+    "inUse": "قيد الاستخدام",
+    "maintenance": "في الصيانة",
+    "enterName": "يرجى إدخال الاسم",
+    "enterType": "يرجى إدخال النوع",
+    "selectStatus": "يرجى اختيار الحالة"
+  },
+  "interventions": {
+    "title": "التدخلات",
+    "add": "إضافة تدخل",
+    "edit": "تعديل التدخل",
+    "type": "النوع",
+    "date": "التاريخ",
+    "parcel": "القطعة",
+    "crop": "المحصول",
+    "description": "الوصف",
+    "status": "الحالة",
+    "planned": "مخطط",
+    "inProgress": "قيد التنفيذ",
+    "completed": "مكتمل",
+    "enterType": "يرجى إدخال النوع",
+    "enterDate": "يرجى إدخال التاريخ",
+    "selectParcel": "يرجى اختيار القطعة",
+    "selectStatus": "يرجى اختيار الحالة"
+  },
+  "demandes": {
+    "title": "الطلبات",
+    "add": "إضافة طلب",
+    "edit": "تعديل الطلب",
+    "type": "النوع",
+    "date": "التاريخ",
+    "user": "المستخدم",
+    "description": "الوصف",
+    "status": "الحالة",
+    "pending": "معلق",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "enterType": "يرجى إدخال النوع",
+    "enterDate": "يرجى إدخال التاريخ",
+    "selectStatus": "يرجى اختيار الحالة"
+  },
+  "irrigation": {
+    "title": "الري",
+    "plans": "خطط الري",
+    "cycles": "دورات الري",
+    "addPlan": "إضافة خطة ري",
+    "editPlan": "تعديل خطة الري",
+    "addCycle": "إضافة دورة ري",
+    "editCycle": "تعديل دورة الري",
+    "parcel": "القطعة",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "frequency": "التكرار",
+    "duration": "المدة (دقائق)",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "completed": "مكتمل",
+    "selectParcel": "يرجى اختيار القطعة",
+    "enterStartDate": "يرجى إدخال تاريخ البدء",
+    "selectStatus": "يرجى اختيار الحالة"
   },
   "admin": {
     "title": "لوحة تحكم المدير",
@@ -526,8 +647,87 @@
     "completed": "✓ مكتمل",
     "inProgress": "• قيد التنفيذ",
     "pending": "○ معلق",
-    "active": "● نشط"
+    "active": "● نشط",
+    "cancelled": "ملغى",
+    "scheduled": "مجدول"
   },
   "quickActions": "إجراءات سريعة",
-  "view": "عرض →"
+  "view": "عرض →",
+  "crops": {
+    "tomatoes": "طماطم",
+    "wheat": "قمح",
+    "corn": "ذرة",
+    "potatoes": "بطاطس",
+    "olives": "زيتون",
+    "citrus": "حمضيات",
+    "barley": "شعير"
+  },
+  "machines": {
+    "tractor": "جرار",
+    "harvester": "حصادة",
+    "sprayer": "رشاش",
+    "drip_system": "نظام تنقيط",
+    "plow": "محراث"
+  },
+  "interventionTypes": {
+    "pest_control": "مكافحة الآفات",
+    "fertilization": "تسميد",
+    "soil_testing": "فحص التربة",
+    "irrigation": "ري",
+    "harvesting": "حصاد",
+    "pruning": "تقليم"
+  },
+  "reports": {
+    "monthly": "تقرير شهري",
+    "weekly": "تقرير أسبوعي",
+    "annual": "تقرير سنوي"
+  },
+  "days": {
+    "Mon": "الإثنين",
+    "Mar": "الثلاثاء",
+    "Mer": "الأربعاء",
+    "Jeu": "الخميس",
+    "Ven": "الجمعة",
+    "Sam": "السبت",
+    "Dim": "الأحد"
+  },
+  "months": {
+    "Jan": "يناير",
+    "Fév": "فبراير",
+    "Mar": "مارس",
+    "Avr": "أبريل",
+    "Mai": "مايو"
+  },
+  "recommendations": {
+    "weather_favorable": "الظروف الجوية مواتية للتطبيق"
+  },
+  "demandTypes": {
+    "urgent_irrigation": "ري عاجل",
+    "tractor_maintenance": "صيانة الجرار",
+    "sensor_installation": "تركيب حساسات",
+    "technical_support": "دعم فني",
+    "fertilizer_purchase": "شراء سماد"
+  },
+  "irrigationMethods": {
+    "drip_irrigation": "التنقيط",
+    "sprinkler": "الرش"
+  },
+  "irrigationFrequencies": {
+    "daily": "يوميًا",
+    "twiceWeekly": "مرتين في الأسبوع",
+    "weekly": "أسبوعيًا"
+  },
+  "historyTypes": {
+    "intervention": "التدخل",
+    "irrigation": "الري",
+    "report": "التقرير",
+    "machine": "الآلة"
+  },
+  "historyActions": {
+    "pest_control_completed": "تم إنهاء مكافحة الآفات",
+    "irrigation_cycle_started": "تم بدء دورة الري",
+    "monthly_report_generated": "تم إنشاء التقرير الشهري",
+    "tractor_maintenance_completed": "تم إنهاء صيانة الجرار",
+    "fertilization_assigned": "تم تعيين التسميد"
+  }
 }

@@ -16,7 +16,7 @@ from apps.cultures.models import Culture
 from apps.machines.models import Machine
 from apps.interventions.models import Intervention
 from apps.demandes.models import Demande
-from apps.irrigation.models import PlanIrrigation, CycleIrrigation
+from apps.irrigation.models import PlanIrrigation, CycleIrrigation, IoTSensor, IoTAlert
 
 print("🌱 Début du seeding Smart Farming...")
 
@@ -164,6 +164,31 @@ cycle = CycleIrrigation.objects.create(
     technicien=tech,
 )
 print(f"✅ Plan irrigation + cycle créés")
+
+# ─── IoT Sensors ────────────────────────────────────────────────────────────────
+s1 = IoTSensor.objects.create(
+    sensor_name='Sensor A-1',
+    parcelle=p1,
+    moisture_level=45.2,
+    battery_level=87.5,
+    status='ACTIVE'
+)
+s2 = IoTSensor.objects.create(
+    sensor_name='Sensor B-2',
+    parcelle=p2,
+    moisture_level=22.8,
+    battery_level=65.3,
+    status='ACTIVE'
+)
+print(f"✅ IoT Sensors créés : {s1}, {s2}")
+
+# ─── IoT Alerts ─────────────────────────────────────────────────────────────────
+alert = IoTAlert.objects.create(
+    sensor=s2,
+    message=f"Critical water stress detected in {p2.nom}",
+    alert_type='CRITICAL'
+)
+print(f"✅ IoT Alerts créés : {alert}")
 
 print("\n🎉 Seeding terminé avec succès !")
 print("=" * 50)

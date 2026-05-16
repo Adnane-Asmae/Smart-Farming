@@ -459,35 +459,9 @@
     "activeCycles": "Cycles actifs",
     "completedCycles": "Cycles terminés",
     "waterConsumed": "Eau consommée",
-    "twiceWeekly": "2 fois par semaine"
-  },
-  "admin": {
-    "title": "Administrateur",
-    "subtitle": "Gestion complète de la plateforme",
-    "totalUsers": "Utilisateurs totaux",
-    "activeFarms": "Fermes actives",
-    "todayActivities": "Activités aujourd'hui",
-    "pendingRequests": "Demandes en attente",
-    "userManagement": "Gestion utilisateurs",
-    "farmMonitoring": "Suivi des fermes",
-    "systemSettings": "Paramètres système",
-    "reportsAnalytics": "Rapports et analyses"
-  },
-  "farmer": {
-    "title": "Agriculteur",
-    "subtitle": "Gestion de vos parcelles et cultures",
-    "myParcels": "Mes parcelles",
-    "cropsGrowing": "Cultures en cours",
-    "machines": "Machines",
-    "pendingTasks": "Tâches en attente"
-  },
-  "agronomist": {
-    "title": "Agronome",
-    "subtitle": "Suivi et recommandations agricoles",
-    "farmsAssigned": "Fermes assignées",
-    "cropsAnalyzed": "Cultures analysées",
-    "recommendations": "Recommandations",
-    "interventions": "Interventions"
+    "twiceWeekly": "2 fois par semaine",
+    "lastUpdate": "Dernière mise à jour",
+    "recommendation": "Recommandation"
   },
   "parcelles": {
     "title": "Parcelles",
@@ -674,8 +648,87 @@
     "completed": "✓ terminé",
     "inProgress": "• en cours",
     "pending": "○ en attente",
-    "active": "● actif"
+    "active": "● actif",
+    "cancelled": "Annulé",
+    "scheduled": "Planifié"
   },
   "quickActions": "Actions rapides",
-  "view": "Voir →"
+  "view": "Voir →",
+  "crops": {
+    "tomatoes": "Tomates",
+    "wheat": "Blé",
+    "corn": "Maïs",
+    "potatoes": "Pommes de terre",
+    "olives": "Olives",
+    "citrus": "Agrumes",
+    "barley": "Orge"
+  },
+  "machines": {
+    "tractor": "Tracteur",
+    "harvester": "Moissonneuse",
+    "sprayer": "Pulvérisateur",
+    "drip_system": "Système goutte-à-goutte",
+    "plow": "Charrue"
+  },
+  "interventionTypes": {
+    "pest_control": "Traitement phytosanitaire",
+    "fertilization": "Fertilisation",
+    "soil_testing": "Analyse de sol",
+    "irrigation": "Irrigation",
+    "harvesting": "Récolte",
+    "pruning": "Taille"
+  },
+  "reports": {
+    "monthly": "Rapport mensuel",
+    "weekly": "Rapport hebdomadaire",
+    "annual": "Rapport annuel"
+  },
+  "days": {
+    "Mon": "Lun",
+    "Mar": "Mar",
+    "Mer": "Mer",
+    "Jeu": "Jeu",
+    "Ven": "Ven",
+    "Sam": "Sam",
+    "Dim": "Dim"
+  },
+  "months": {
+    "Jan": "Jan",
+    "Fév": "Fév",
+    "Mar": "Mar",
+    "Avr": "Avr",
+    "Mai": "Mai"
+  },
+  "recommendations": {
+    "weather_favorable": "Conditions météo favorables pour l'application"
+  },
+  "demandTypes": {
+    "urgent_irrigation": "Irrigation urgente",
+    "tractor_maintenance": "Maintenance tracteur",
+    "sensor_installation": "Installation capteur",
+    "technical_support": "Assistance technique",
+    "fertilizer_purchase": "Achat d'engrais"
+  },
+  "irrigationMethods": {
+    "drip_irrigation": "Goutte à goutte",
+    "sprinkler": "Aspersion"
+  },
+  "irrigationFrequencies": {
+    "daily": "Quotidienne",
+    "twiceWeekly": "Deux fois par semaine",
+    "weekly": "Hebdomadaire"
+  },
+  "historyTypes": {
+    "intervention": "Intervention",
+    "irrigation": "Irrigation",
+    "report": "Rapport",
+    "machine": "Machine"
+  },
+  "historyActions": {
+    "pest_control_completed": "Contrôle phytosanitaire terminé",
+    "irrigation_cycle_started": "Cycle d'irrigation démarré",
+    "monthly_report_generated": "Rapport mensuel généré",
+    "tractor_maintenance_completed": "Maintenance du tracteur terminée",
+    "fertilization_assigned": "Fertilisation assignée"
+  }
 }

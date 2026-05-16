@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { Card, Typography, Button, Input, Row, Col, Progress, Tag } from 'antd';
+import { Card, Typography, Button, Input, Row, Col, Progress, Tag, Modal } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, ExperimentOutlined, CloudOutlined, SmileOutlined, TeamOutlined } from '@ant-design/icons';
 import useAuthStore from '../stores/useAuthStore';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../utils/date';
 
 const { Title, Text, Paragraph } = Typography;
 
 const Parcelles = () => {
   const { user } = useAuthStore();
   const userRole = user?.role || 'FARMER';
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [parcels, setParcels] = useState([
     {
@@ -17,7 +18,7 @@ const Parcelles = () => {
       name: 'Parcel A-12',
       description: 'North Field Alpha',
       area: '5.2',
-      culture: 'Tomatoes',
+      cultureKey: 'tomatoes',
       soilType: 'Loamy',
       health: 'Excellent',
       moisture: 68,
@@ -30,7 +31,7 @@ const Parcelles = () => {
       name: 'Parcel B-5',
       description: 'East Field Beta',
       area: '8.7',
-      culture: 'Wheat',
+      cultureKey: 'wheat',
       soilType: 'Clay',
       health: 'Good',
       moisture: 55,
@@ -43,7 +44,7 @@ const Parcelles = () => {
       name: 'Parcel C-8',
       description: 'South Field Gamma',
       area: '6.5',
-      culture: 'Corn',
+      cultureKey: 'corn',
       soilType: 'Sandy Loam',
       health: 'Fair',
       moisture: 42,
@@ -56,7 +57,7 @@ const Parcelles = () => {
       name: 'Parcel D-3',
       description: 'West Field Delta',
       area: '4.3',
-      culture: 'Lettuce',
+      cultureKey: 'lettuce',
       soilType: 'Loamy',
       health: 'Excellent',
       moisture: 72,
@@ -69,7 +70,7 @@ const Parcelles = () => {
       name: 'Parcel E-1',
       description: 'Center Field Epsilon',
       area: '7.1',
-      culture: 'Barley',
+      cultureKey: 'barley',
       soilType: 'Sandy',
       health: 'Good',
       moisture: 58,
@@ -80,6 +81,10 @@ const Parcelles = () => {
   ]);
 
   const [searchText, setSearchText] = useState('');
+  const [mapModalVisible, setMapModalVisible] = useState(false);
+  const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+  const [cropsModalVisible, setCropsModalVisible] = useState(false);
+  const [selectedParcel, setSelectedParcel] = useState(null);
 
   const getHealthTag = (health) => {
     const colors = {
@@ -125,7 +130,7 @@ const Parcelles = () => {
   const filteredParcels = parcels.filter(item => 
     item.name.toLowerCase().includes(searchText.toLowerCase()) || 
     item.description.toLowerCase().includes(searchText.toLowerCase()) || 
-    item.culture.toLowerCase().includes(searchText.toLowerCase())
+    t(`crops.${item.cultureKey}`).toLowerCase().includes(searchText.toLowerCase())
   );
 
   const renderTechnicianParcels = () => (
@@ -143,6 +148,7 @@ const Parcelles = () => {
           type="primary" 
           icon={<EnvironmentOutlined />}
           size="large"
+          onClick={() => setMapModalVisible(true)}
           style={{ 
             background: '#23a045',
             border: 'none',
@@ -294,7 +300,7 @@ const Parcelles = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <ExperimentOutlined style={{ color: '#4a7c59' }} />
                     <Text style={{ color: '#1a1a1a', fontSize: 16, fontWeight: 600 }}>
-                      {parcel.culture}
+                      {t(`crops.${parcel.cultureKey}`)}
                     </Text>
                   </div>
                 </Col>
@@ -349,7 +355,7 @@ const Parcelles = () => {
                       {t('common.irrigationStatus')}
                     </Text>
                     <Text type="secondary" style={{ fontSize: 12, color: '#667085' }}>
-                      {t('common.last')}: {parcel.irrigationLast}
+                      {t('common.last')}: {formatDate(parcel.irrigationLast, i18n.language)}
                     </Text>
                   </div>
                   {getIrrigationStatusTag(parcel.irrigationStatus)}
@@ -364,6 +370,10 @@ const Parcelles = () => {
                 <Col xs={12}>
                   <Button 
                     block
+                    onClick={() => {
+                      setSelectedParcel(parcel);
+                      setDetailsModalVisible(true);
+                    }}
                     style={{ 
                       border: '1px solid #e2e8e0', 
                       borderRadius: 8,
@@ -377,6 +387,10 @@ const Parcelles = () => {
                   <Button 
                     type="primary"
                     block
+                    onClick={() => {
+                      setSelectedParcel(parcel);
+                      setCropsModalVisible(true);
+                    }}
                     style={{ 
                       background: '#23a045',
                       border: 'none',
@@ -392,6 +406,144 @@ const Parcelles = () => {
           </Col>
         ))}
       </Row>
+
+      <Modal
+        title="Parcels Map"
+        open={mapModalVisible}
+        onCancel={() => setMapModalVisible(false)}
+        footer={null}
+        width={900}
+        style={{ top: 20 }}
+      >
+        <div style={{ marginTop: 16 }}>
+          <iframe
+            width="100%"
+            height="500"
+            frameBorder="0"
+            style={{ border: 0, borderRadius: 8 }}
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-7.6%2C33.55%2C-7.55%2C33.6&layer=mapnik&marker=33.5731%2C-7.5898"
+            allowFullScreen
+          ></iframe>
+          <div style={{ marginTop: 12, textAlign: 'right' }}>
+            <small>
+              <a href="https://www.openstreetmap.org/?mlat=33.5731&mlon=-7.5898#map=14/33.5731/-7.5898" target="_blank" rel="noopener noreferrer" style={{ color: '#4a7c59' }}>
+                View Larger Map
+              </a>
+            </small>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title={selectedParcel ? `Parcel Details: ${selectedParcel.name}` : 'Parcel Details'}
+        open={detailsModalVisible}
+        onCancel={() => setDetailsModalVisible(false)}
+        footer={null}
+        width={600}
+      >
+        {selectedParcel && (
+          <div style={{ marginTop: 16 }}>
+            <Row gutter={[16, 16]}>
+              <Col xs={24}>
+                <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  {t('common.description')}
+                </Text>
+                <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 500 }}>
+                  {selectedParcel.description}
+                </Text>
+              </Col>
+              <Col xs={12}>
+                <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  {t('common.area')}
+                </Text>
+                <Text style={{ color: '#1a1a1a', fontSize: 16, fontWeight: 600 }}>
+                  {selectedParcel.area} {t('common.hectares')}
+                </Text>
+              </Col>
+              <Col xs={12}>
+                <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  {t('common.soilType')}
+                </Text>
+                <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 500 }}>
+                  {selectedParcel.soilType}
+                </Text>
+              </Col>
+              <Col xs={12}>
+                <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  {t('common.health')}
+                </Text>
+                {getHealthTag(selectedParcel.health)}
+              </Col>
+              <Col xs={12}>
+                <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                  Coordinates
+                </Text>
+                <Text style={{ color: '#1a1a1a', fontSize: 15, fontWeight: 500 }}>
+                  {selectedParcel.coordinates}
+                </Text>
+              </Col>
+              <Col xs={24}>
+                <div style={{ marginTop: 12 }}>
+                  <Text style={{ color: '#667085', fontSize: 13, display: 'block', marginBottom: 4 }}>
+                    {t('common.soilMoisture')}
+                  </Text>
+                  <Progress 
+                    percent={selectedParcel.moisture} 
+                    strokeColor={selectedParcel.moisture < 50 ? '#ea580c' : '#4a7c59'} 
+                    style={{ marginTop: 8 }}
+                  />
+                </div>
+              </Col>
+              <Col xs={24}>
+                <div style={{ 
+                  background: '#f0fdf4', 
+                  padding: 16, 
+                  borderRadius: 10, 
+                  marginTop: 12 
+                }}>
+                  <Text style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 600, display: 'block', marginBottom: 4 }}>
+                    {t('common.irrigationStatus')}
+                  </Text>
+                  {getIrrigationStatusTag(selectedParcel.irrigationStatus)}
+                  <Text type="secondary" style={{ fontSize: 12, color: '#667085', display: 'block', marginTop: 8 }}>
+                    {t('common.last')}: {formatDate(selectedParcel.irrigationLast, i18n.language)}
+                  </Text>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        title={selectedParcel ? `Crops in ${selectedParcel.name}` : 'Parcel Crops'}
+        open={cropsModalVisible}
+        onCancel={() => setCropsModalVisible(false)}
+        footer={null}
+        width={600}
+      >
+        {selectedParcel && (
+          <div style={{ marginTop: 16 }}>
+            <Card
+              style={{ 
+                borderRadius: 12, 
+                border: '1px solid #e2e8e0',
+                boxShadow: 'none'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <ExperimentOutlined style={{ fontSize: 24, color: '#4a7c59' }} />
+                <Title level={4} style={{ margin: 0 }}>
+                  {t(`crops.${selectedParcel.cultureKey}`)}
+                </Title>
+              </div>
+              <Paragraph type="secondary" style={{ margin: 0, fontSize: 14 }}>
+                Crop planted in {selectedParcel.name} with {selectedParcel.soilType} soil. Current soil moisture is {selectedParcel.moisture}%.
+              </Paragraph>
+            </Card>
+          </div>
+        )}
+      </Modal>
     </>
   );
 

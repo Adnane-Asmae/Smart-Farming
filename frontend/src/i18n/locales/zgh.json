@@ -458,7 +458,128 @@
     "activeCycles": "Tasertin n tussna i d-yeddan",
     "completedCycles": "Tasertin n tussna i d-yeddan",
     "waterConsumed": "Aman i d-yeddan",
-    "twiceWeekly": "2 smawin ɣ usbuɛ"
+    "twiceWeekly": "2 smawin ɣ usbuɛ",
+    "lastUpdate": "Tazwara n usali",
+    "recommendation": "Tussna"
+  },
+  "parcelles": {
+    "title": "Tiɣsa",
+    "add": "Rnu tiɣsa",
+    "edit": "Beddel tiɣsa",
+    "name": "Isem",
+    "area": "Asɣar (hectares)",
+    "location": "Tamur",
+    "soilType": "Anamm n tmalat",
+    "farmer": "Amḍan",
+    "creationDate": "Asnamm n usna",
+    "description": "Tasert",
+    "clay": "Tmalat",
+    "sandy": "Tmalat n tɣawsa",
+    "loamy": "Tmalat n tmalat",
+    "calcareous": "Tmalat n tɣawsa",
+    "peaty": "Tmalat n tɣawsa",
+    "other": "Uɣar",
+    "meknes": "Meknas",
+    "agadir": "Agadir",
+    "marrakech": "Marrakech",
+    "soussMassa": "Souss-Massa",
+    "gharb": "Gharb",
+    "casablanca": "Casablanca",
+    "rabat": "Rabat",
+    "fes": "Fes",
+    "tanger": "Tanger",
+    "oujda": "Oujda",
+    "enterName": "Tɣalft ad tkkes isem",
+    "enterArea": "Tɣalft ad tkkes asɣar",
+    "enterLocation": "Tɣalft ad tkkes tamur",
+    "selectSoilType": "Tɣalft ad tɣaḍ anamm n tmalat",
+    "selectFarmer": "Tɣalft ad tɣaḍ amḍan"
+  },
+  "cultures": {
+    "title": "Tikti",
+    "add": "Rnu tikti",
+    "edit": "Beddel tikti",
+    "name": "Isem",
+    "type": "Anamm",
+    "variety": "Tamatut",
+    "plantingDate": "Asnamm n teffra",
+    "expectedHarvest": "Asli i d-yettwakks",
+    "parcel": "Tiɣsa",
+    "status": "Tasert",
+    "enterName": "Tɣalft ad tkkes isem",
+    "enterType": "Tɣalft ad tkkes anamm",
+    "selectParcel": "Tɣalft ad tɣaḍ tiɣsa",
+    "selectStatus": "Tɣalft ad tɣaḍ tasert"
+  },
+  "machines": {
+    "title": "Tiɣni",
+    "add": "Rnu tiɣni",
+    "edit": "Beddel tiɣni",
+    "name": "Isem",
+    "type": "Anamm",
+    "model": "Tamatut",
+    "status": "Tasert",
+    "available": "I d-yeddan",
+    "inUse": "I d-yeddan s tamdint",
+    "maintenance": "ɣef tasert",
+    "enterName": "Tɣalft ad tkkes isem",
+    "enterType": "Tɣalft ad tkkes anamm",
+    "selectStatus": "Tɣalft ad tɣaḍ tasert"
+  },
+  "interventions": {
+    "title": "Tanmi",
+    "add": "Rnu tanmi",
+    "edit": "Beddel tanmi",
+    "type": "Anamm",
+    "date": "Tazwara",
+    "parcel": "Tiɣsa",
+    "crop": "Tiɣsa",
+    "description": "Tasert",
+    "status": "Tasert",
+    "planned": "I d-yettwakks",
+    "inProgress": "I d-yeqqimen",
+    "completed": "I d-yeddan",
+    "enterType": "Tɣalft ad tkkes anamm",
+    "enterDate": "Tɣalft ad tkkes tazwara",
+    "selectParcel": "Tɣalft ad tɣaḍ tiɣsa",
+    "selectStatus": "Tɣalft ad tɣaḍ tasert"
+  },
+  "demandes": {
+    "title": "Tasertin",
+    "add": "Rnu tasert",
+    "edit": "Beddel tasert",
+    "type": "Anamm",
+    "date": "Tazwara",
+    "user": "Amalas",
+    "description": "Tasert",
+    "status": "Tasert",
+    "pending": "I d-yettwakks",
+    "approved": "I d-yeddan",
+    "rejected": "I d-yeqqkan",
+    "enterType": "Tɣalft ad tkkes anamm",
+    "enterDate": "Tɣalft ad tkkes tazwara",
+    "selectStatus": "Tɣalft ad tɣaḍ tasert"
+  },
+  "irrigation": {
+    "title": "Asif",
+    "plans": "Tasertin n asif",
+    "cycles": "Tasertin n tussna n asif",
+    "addPlan": "Rnu tasert n asif",
+    "editPlan": "Beddel tasert n asif",
+    "addCycle": "Rnu tasert n tussna n asif",
+    "editCycle": "Beddel tasert n tussna n asif",
+    "parcel": "Tiɣsa",
+    "startDate": "Asnamm n usna",
+    "endDate": "Asnamm n taggar",
+    "frequency": "Tasert n tussna",
+    "duration": "Tasert (ddqiq)",
+    "status": "Tasert",
+    "active": "D-yeqqim",
+    "inactive": "Ulac d-yeqqim",
+    "completed": "I d-yeddan",
+    "selectParcel": "Tɣalft ad tɣaḍ tiɣsa",
+    "enterStartDate": "Tɣalft ad tkkes asnamm n usna",
+    "selectStatus": "Tɣalft ad tɣaḍ tasert"
   },
   "admin": {
     "title": "Tafukt n tɣawsa n Amqqran",
@@ -526,8 +647,87 @@
     "completed": "✓ i d-yeddan",
     "inProgress": "• i d-yeqqimen",
     "pending": "○ i yettwakks",
-    "active": "● i d-yeqqim"
+    "active": "● i d-yeqqim",
+    "cancelled": "D-yeddan",
+    "scheduled": "Amnna"
   },
   "quickActions": "Timmi ifeḍanen",
-  "view": "Wali →"
+  "view": "Wali →",
+  "crops": {
+    "tomatoes": "Tomatit",
+    "wheat": "Irden",
+    "corn": "Afergan",
+    "potatoes": "Timẓinin",
+    "olives": "Azemmur",
+    "citrus": "Tilemẓiyin",
+    "barley": "Timẓin"
+  },
+  "machines": {
+    "tractor": "Atraktur",
+    "harvester": "Amɣar",
+    "sprayer": "Arraš",
+    "drip_system": "Anagraw n tlaẓt",
+    "plow": "Aḥerray"
+  },
+  "interventionTypes": {
+    "pest_control": "Sefsex n iferḍanen",
+    "fertilization": "Tasert n tifrkin",
+    "soil_testing": "Tazrit n tafukt",
+    "irrigation": "Asif",
+    "harvesting": "Aɣrass",
+    "pruning": "Tawmt"
+  },
+  "reports": {
+    "monthly": "Aneɣlaf ayyurur",
+    "weekly": "Aneɣlaf n yimalass",
+    "annual": "Aneɣlaf aseggas"
+  },
+  "days": {
+    "Mon": "Aynas",
+    "Mar": "Asinas",
+    "Mer": "Akraz",
+    "Jeu": "Akwaz",
+    "Ven": "Asimwas",
+    "Sam": "Asiḍyas",
+    "Dim": "Asamas"
+  },
+  "months": {
+    "Jan": "Yennayer",
+    "Fév": "Fuṛar",
+    "Mar": "Meɣres",
+    "Avr": "Yebrir",
+    "Mai": "Mayyu"
+  },
+  "recommendations": {
+    "weather_favorable": "Ilugan n igenna yelhan i usekyed"
+  },
+  "demandTypes": {
+    "urgent_irrigation": "Asif i d-yaɣerday",
+    "tractor_maintenance": "Tasert n atraktur",
+    "sensor_installation": "Tasergt n tiɣniwin n tassnawin",
+    "technical_support": "Tusligl n tilimin",
+    "fertilizer_purchase": "Aɣellu n tifrkin"
+  },
+  "irrigationMethods": {
+    "drip_irrigation": "Anagraw n tlaẓt",
+    "sprinkler": "Arraš"
+  },
+  "irrigationFrequencies": {
+    "daily": "Aɣyulas",
+    "twiceWeekly": "Sin n yimalass",
+    "weekly": "Yimalass"
+  },
+  "historyTypes": {
+    "intervention": "Tanmi",
+    "irrigation": "Asif",
+    "report": "Tasert",
+    "machine": "Taɣni"
+  },
+  "historyActions": {
+    "pest_control_completed": "Sefsex n iferḍanen i d-yeddan",
+    "irrigation_cycle_started": "Tagara n asif i d-yeqqimen",
+    "monthly_report_generated": "Aneɣlaf ayyurur i yettwafna",
+    "tractor_maintenance_completed": "Tasert n atraktur i d-yeddan",
+    "fertilization_assigned": "Tasert n tifrkin i yettwassnen"
+  }
 }

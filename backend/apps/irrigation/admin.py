@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import PlanIrrigation, CycleIrrigation, IoTSensor, IoTAlert
 
-# Register your models here.
+admin.site.register(PlanIrrigation)
+admin.site.register(CycleIrrigation)
+admin.site.register(IoTSensor)
+admin.site.register(IoTAlert)

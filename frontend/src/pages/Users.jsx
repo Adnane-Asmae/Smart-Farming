@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Space, Card, message, Modal, Form, Input, Select, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, EyeOutlined } from '@ant-design/icons';
+import { Table, Button, Space, Card, message, Modal, Form, Input, Select, Tag, Tabs, Row, Col, Typography } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, EyeOutlined, EnvironmentOutlined, ToolOutlined, AlertOutlined, CheckCircleOutlined, ClockCircleOutlined, TeamOutlined } from '@ant-design/icons';
 import api from '../api';
 import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
+const { Title } = Typography;
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,36 @@ const Users = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [form] = Form.useForm();
   const { t } = useTranslation();
+
+  const [parcels, setParcels] = useState([
+    { id: 1, name: 'Parcelle Nord A1', location: 'Casablanca, Maroc', area: 5.2, crop: 'Tomates', farmer: 'Mohammed Alami', irrigation: 'Automatique', status: 'Actif' },
+    { id: 2, name: 'Parcelle Sud B2', location: 'Rabat, Maroc', area: 3.8, crop: 'Pommes de terre', farmer: 'Youssef Chakir', irrigation: 'Manuel', status: 'Actif' },
+    { id: 3, name: 'Parcelle Est C3', location: 'Fès, Maroc', area: 7.1, crop: 'Blé', farmer: 'Amina Berrada', irrigation: 'Automatique', status: 'Attention' },
+    { id: 4, name: 'Parcelle Ouest D4', location: 'Marrakech, Maroc', area: 4.5, crop: 'Maïs', farmer: 'Mohammed Alami', irrigation: 'Automatique', status: 'Actif' },
+    { id: 5, name: 'Parcelle Centre E5', location: 'Tanger, Maroc', area: 6.0, crop: 'Oignons', farmer: 'Amina Berrada', irrigation: 'Manuel', status: 'Inactif' },
+  ]);
+
+  const [interventions, setInterventions] = useState([
+    { id: 1001, type: 'Irrigation automatique', parcel: 'Parcelle A1', technician: 'Fatima Zahra', priority: 'Haute', dateStart: '14/05/2024', dateEnd: '14/05/2024', progress: 75, status: 'Actif' },
+    { id: 1002, type: 'Maintenance tracteur', parcel: 'Parcelle B2', technician: 'Sanaa Idrissi', priority: 'Moyenne', dateStart: '13/05/2024', dateEnd: '15/05/2024', progress: 45, status: 'Actif' },
+    { id: 1003, type: 'Installation capteurs', parcel: 'Parcelle E5', technician: 'Fatima Zahra', priority: 'Basse', dateStart: '15/05/2024', dateEnd: '16/05/2024', progress: 0, status: 'En attente' },
+    { id: 1004, type: 'Traitement phytosanitaire', parcel: 'Parcelle C3', technician: 'Sanaa Idrissi', priority: 'Haute', dateStart: '14/05/2024', dateEnd: '14/05/2024', progress: 90, status: 'Actif' },
+    { id: 1005, type: 'Réparation pompe irrigation', parcel: 'Parcelle D4', technician: 'Fatima Zahra', priority: 'Moyenne', dateStart: '10/05/2024', dateEnd: '12/05/2024', progress: 100, status: 'Inactif' },
+  ]);
+
+  const parcelStats = {
+    total: 12,
+    totalArea: 68.5,
+    active: 9,
+    alert: 3
+  };
+
+  const interventionStats = {
+    total: 127,
+    inProgress: 18,
+    completed: 103,
+    pending: 6
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -78,7 +109,7 @@ const Users = () => {
     }
   };
 
-  const columns = [
+  const userColumns = [
     {
       title: t('common.name'),
       dataIndex: 'nom',
@@ -160,13 +191,330 @@ const Users = () => {
     },
   ];
 
+  const parcelColumns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      render: (id) => `P${String(id).padStart(2, '0')}`,
+    },
+    {
+      title: 'Nom',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <EnvironmentOutlined style={{ color: '#4a7c59' }} />
+          <span style={{ fontWeight: 600 }}>{text}</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Localisation',
+      dataIndex: 'location',
+      key: 'location',
+    },
+    {
+      title: 'Surface',
+      dataIndex: 'area',
+      key: 'area',
+      render: (val) => `${val} ha`,
+    },
+    {
+      title: 'Culture',
+      dataIndex: 'crop',
+      key: 'crop',
+    },
+    {
+      title: 'Agriculteur',
+      dataIndex: 'farmer',
+      key: 'farmer',
+    },
+    {
+      title: 'Irrigation',
+      dataIndex: 'irrigation',
+      key: 'irrigation',
+    },
+    {
+      title: 'Statut',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => {
+        const colors = { 'Actif': 'success', 'Inactif': 'default', 'Attention': 'warning' };
+        return (
+          <Tag color={colors[status]}>
+            {status === 'Attention' && <AlertOutlined style={{ marginRight: 4 }} />}
+            {status}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      fixed: 'right',
+      width: 150,
+      render: (_unused, record) => (
+        <Space size="small" orientation="horizontal">
+          <Button icon={<EyeOutlined />} size="small" type="text" />
+          <Button icon={<EditOutlined />} size="small" type="text" />
+          <Button icon={<DeleteOutlined />} size="small" danger type="text" />
+        </Space>
+      ),
+    },
+  ];
+
+  const interventionColumns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <ToolOutlined style={{ color: '#2385bb' }} />
+          <span style={{ fontWeight: 600 }}>{text}</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Parcelle',
+      dataIndex: 'parcel',
+      key: 'parcel',
+    },
+    {
+      title: 'Technicien',
+      dataIndex: 'technician',
+      key: 'technician',
+    },
+    {
+      title: 'Priorité',
+      dataIndex: 'priority',
+      key: 'priority',
+      render: (priority) => {
+        const colors = { 'Haute': 'error', 'Moyenne': 'warning', 'Basse': 'processing' };
+        return <Tag color={colors[priority]}>{priority}</Tag>;
+      },
+    },
+    {
+      title: 'Date début',
+      dataIndex: 'dateStart',
+      key: 'dateStart',
+    },
+    {
+      title: 'Date fin',
+      dataIndex: 'dateEnd',
+      key: 'dateEnd',
+    },
+    {
+      title: 'Progression',
+      dataIndex: 'progress',
+      key: 'progress',
+      render: (val) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ 
+            width: 80, height: 8, background: '#f0f0f0', borderRadius: 4, overflow: 'hidden' 
+          }}>
+            <div style={{ 
+              width: `${val}%`, 
+              height: '100%', 
+              background: val === 100 ? '#52c41a' : '#1890ff',
+              borderRadius: 4
+            }} />
+          </div>
+          <span style={{ fontWeight: 600 }}>{val}%</span>
+        </div>
+      ),
+    },
+    {
+      title: 'Statut',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => {
+        const colors = { 'Actif': 'success', 'Inactif': 'default', 'En attente': 'processing' };
+        return (
+          <Tag color={colors[status]}>
+            {status === 'En attente' && <ClockCircleOutlined style={{ marginRight: 4 }} />}
+            {status === 'Inactif' && <CheckCircleOutlined style={{ marginRight: 4 }} />}
+            {status}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      fixed: 'right',
+      width: 120,
+      render: (_unused, record) => (
+        <Space size="small" orientation="horizontal">
+          <Button icon={<EditOutlined />} size="small" type="text" />
+          <Button icon={<DeleteOutlined />} size="small" danger type="text" />
+        </Space>
+      ),
+    },
+  ];
+
+  const items = [
+    {
+      key: '1',
+      label: <span style={{ fontSize: 15, fontWeight: 600 }}>Users</span>,
+      children: (
+        <Table
+          columns={userColumns}
+          dataSource={users}
+          loading={loading}
+          rowKey="id"
+          scroll={{ x: 1000 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `${t('common.total')} : ${total} utilisateur${total > 1 ? 's' : ''}`,
+          }}
+        />
+      ),
+    },
+    {
+      key: '2',
+      label: <span style={{ fontSize: 15, fontWeight: 600 }}>Parcelle</span>,
+      children: (
+        <>
+          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ fontSize: 14, color: '#667085', marginBottom: 8 }}>Total parcelles</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#1a1a1a' }}>{parcelStats.total}</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ fontSize: 14, color: '#667085', marginBottom: 8 }}>Surface totale</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#1a1a1a' }}>{parcelStats.totalArea} ha</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ fontSize: 14, color: '#667085', marginBottom: 8 }}>Parcelles actives</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#4a7c59' }}>{parcelStats.active}</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ fontSize: 14, color: '#667085', marginBottom: 8 }}>En alerte</div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#ea580c' }}>{parcelStats.alert}</div>
+              </Card>
+            </Col>
+          </Row>
+          
+          <Table
+            columns={parcelColumns}
+            dataSource={parcels}
+            rowKey="id"
+            scroll={{ x: 1400 }}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showTotal: (total) => `${t('common.total')} : ${total} parcels`,
+            }}
+          />
+        </>
+      ),
+    },
+    {
+      key: '3',
+      label: <span style={{ fontSize: 15, fontWeight: 600 }}>Interventions</span>,
+      children: (
+        <>
+          <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, color: '#667085' }}>Total interventions</span>
+                  <ToolOutlined style={{ color: '#4a7c59', fontSize: 18 }} />
+                </div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#1a1a1a' }}>{interventionStats.total}</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, color: '#667085' }}>En cours</span>
+                  <ClockCircleOutlined style={{ color: '#ea580c', fontSize: 18 }} />
+                </div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#ea580c' }}>{interventionStats.inProgress}</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, color: '#667085' }}>Complétées</span>
+                  <CheckCircleOutlined style={{ color: '#4a7c59', fontSize: 18 }} />
+                </div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#4a7c59' }}>{interventionStats.completed}</div>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Card 
+                style={{ borderRadius: 10, border: '1px solid #e2e8e0', boxShadow: 'none' }}
+                styles={{ body: { padding: 20 } }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, color: '#667085' }}>En attente</span>
+                  <ClockCircleOutlined style={{ color: '#1890ff', fontSize: 18 }} />
+                </div>
+                <div style={{ fontSize: 32, fontWeight: 700, color: '#1890ff' }}>{interventionStats.pending}</div>
+              </Card>
+            </Col>
+          </Row>
+          
+          <Table
+            columns={interventionColumns}
+            dataSource={interventions}
+            rowKey="id"
+            scroll={{ x: 1600 }}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showTotal: (total) => `${t('common.total')} : ${total} interventions`,
+            }}
+          />
+        </>
+      ),
+    },
+  ];
+
   return (
     <div style={{ padding: '24px', background: '#f0fdf4', minHeight: '100vh' }}>
       <Card
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <UserOutlined style={{ fontSize: 24, color: '#4a7c59' }} />
-            <span style={{ fontSize: 20, fontWeight: 700 }}>{t('common.manageUsers')}</span>
+            <span style={{ fontSize: 20, fontWeight: 700 }}>Admin Dashboard</span>
           </div>
         }
         extra={
@@ -191,18 +539,7 @@ const Users = () => {
           border: 'none'
         }}
       >
-        <Table
-          columns={columns}
-          dataSource={users}
-          loading={loading}
-          rowKey="id"
-          scroll={{ x: 1000 }}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showTotal: (total) => `${t('common.total')} : ${total} utilisateur${total > 1 ? 's' : ''}`,
-          }}
-        />
+        <Tabs defaultActiveKey="1" items={items} />
       </Card>
 
       <Modal

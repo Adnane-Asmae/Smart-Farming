@@ -3,18 +3,19 @@ import { Table, Button, Space, Card, message, Modal, Form, Input, InputNumber, S
 import { PlusOutlined, EditOutlined, DeleteOutlined, FileTextOutlined, CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { Row, Col, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../utils/date';
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Demandes = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [demandes, setDemandes] = useState([
-    { id: 1, agriculteur: 'Mohammed Alami', type: 'Irrigation urgente', description: 'Besoin d\'irrigation immédiate suite à sécheresse', parcelle: 'Parcelle A1', priorite: 'Haute', date: '14/05/2024 08:30' },
-    { id: 2, agriculteur: 'Youssef Chakir', type: 'Maintenance tracteur', description: 'Tracteur nécessite révision complète', parcelle: 'Parcelle B2', priorite: 'Moyenne', date: '14/05/2024 10:15' },
-    { id: 3, agriculteur: 'Amina Berrada', type: 'Installation capteur', description: 'Installation de nouveaux capteurs d\'humidité', parcelle: 'Parcelle E5', priorite: 'Basse', date: '13/05/2024 14:20' },
-    { id: 4, agriculteur: 'Mohammed Alami', type: 'Assistance technique', description: 'Problème avec système d\'irrigation automatique', parcelle: 'Parcelle D4', priorite: 'Haute', date: '13/05/2024 16:45' },
-    { id: 5, agriculteur: 'Amina Berrada', type: 'Achat d\'engrais', description: 'Demande d\'approvisionnement en engrais organiques', parcelle: 'Parcelle C3', priorite: 'Moyenne', date: '12/05/2024 09:00' },
+    { id: 1, agriculteur: 'Mohammed Alami', typeKey: 'urgent_irrigation', description: 'Besoin d\'irrigation immédiate suite à sécheresse', parcelle: 'Parcelle A1', prioriteKey: 'high', date: '2024-05-14' },
+    { id: 2, agriculteur: 'Youssef Chakir', typeKey: 'tractor_maintenance', description: 'Tracteur nécessite révision complète', parcelle: 'Parcelle B2', prioriteKey: 'medium', date: '2024-05-14' },
+    { id: 3, agriculteur: 'Amina Berrada', typeKey: 'sensor_installation', description: 'Installation de nouveaux capteurs d\'humidité', parcelle: 'Parcelle E5', prioriteKey: 'low', date: '2024-05-13' },
+    { id: 4, agriculteur: 'Mohammed Alami', typeKey: 'technical_support', description: 'Problème avec système d\'irrigation automatique', parcelle: 'Parcelle D4', prioriteKey: 'high', date: '2024-05-13' },
+    { id: 5, agriculteur: 'Amina Berrada', typeKey: 'fertilizer_purchase', description: 'Demande d\'approvisionnement en engrais organiques', parcelle: 'Parcelle C3', prioriteKey: 'medium', date: '2024-05-12' },
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -44,20 +45,20 @@ const Demandes = () => {
     setModalVisible(false);
   };
 
-  const getPrioriteBadge = (priorite) => {
+  const getPrioriteBadge = (prioriteKey) => {
     const colors = {
-      'Haute': '#fee2e2',
-      'Moyenne': '#fff7ed',
-      'Basse': '#eff6ff'
+      'high': '#fee2e2',
+      'medium': '#fff7ed',
+      'low': '#eff6ff'
     };
     const textColors = {
-      'Haute': '#dc2626',
-      'Moyenne': '#ea580c',
-      'Basse': '#2563eb'
+      'high': '#dc2626',
+      'medium': '#ea580c',
+      'low': '#2563eb'
     };
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: colors[priorite], padding: '4px 12px', borderRadius: 20, width: 'fit-content' }}>
-        <span style={{ fontSize: 13, fontWeight: 500, color: textColors[priorite] }}>{priorite}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: colors[prioriteKey], padding: '4px 12px', borderRadius: 20, width: 'fit-content' }}>
+        <span style={{ fontSize: 13, fontWeight: 500, color: textColors[prioriteKey] }}>{t(`common.${prioriteKey}`)}</span>
       </div>
     );
   };
@@ -81,8 +82,9 @@ const Demandes = () => {
     },
     {
       title: t('common.type'),
-      dataIndex: 'type',
+      dataIndex: 'typeKey',
       key: 'type',
+      render: (typeKey) => t(`demandTypes.${typeKey}`),
     },
     {
       title: t('common.description'),
@@ -97,7 +99,7 @@ const Demandes = () => {
     },
     {
       title: t('common.priorite'),
-      dataIndex: 'priorite',
+      dataIndex: 'prioriteKey',
       key: 'priorite',
       render: getPrioriteBadge
     },
@@ -105,6 +107,7 @@ const Demandes = () => {
       title: t('common.date'),
       dataIndex: 'date',
       key: 'date',
+      render: (date) => formatDate(date, i18n.language),
     },
     {
       title: t('common.actions'),

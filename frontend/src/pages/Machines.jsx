@@ -3,18 +3,19 @@ import { Table, Button, Space, Card, message, Modal, Form, Input, Select, Tag } 
 import { PlusOutlined, EditOutlined, DeleteOutlined, TruckOutlined, ToolOutlined } from '@ant-design/icons';
 import { Row, Col, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../utils/date';
 
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 const Machines = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [machines, setMachines] = useState([
-    { id: 1, nom: 'Tracteur John Deere', type: 'Tracteur', marque: 'John Deere 6120M', assigne: 'Parcelle A1', localisation: 'Casablanca', maintenance: '15/04/2024', statut: 'Actif' },
-    { id: 2, nom: 'Pulvérisateur agricole', type: 'Pulvérisateur', marque: 'Amazone UX5200', assigne: 'Parcelle B2', localisation: 'Rabat', maintenance: '20/04/2024', statut: 'Actif' },
-    { id: 3, nom: 'Moissonneuse-batteuse', type: 'Moissonneuse', marque: 'Case IH Axial-Flow', assigne: 'Parcelle C3', localisation: 'Fès', maintenance: '10/03/2024', statut: 'Attention' },
-    { id: 4, nom: 'Système d\'irrigation', type: 'Irrigation', marque: 'Netafim Drip Pro', assigne: 'Parcelle A1', localisation: 'Casablanca', maintenance: '25/04/2024', statut: 'Actif' },
-    { id: 5, nom: 'Semoir de précision', type: 'Semoir', marque: 'Kuhn Planter 3', assigne: 'Non assigné', localisation: 'Entrepôt', maintenance: '05/02/2024', statut: 'Inactif' },
+    { id: 1, nom: 'John Deere 6120M', typeKey: 'tractor', marque: 'John Deere 6120M', assigne: 'Parcelle A1', localisation: 'Casablanca', maintenance: '2024-04-15', statut: 'Actif' },
+    { id: 2, nom: 'Amazone UX5200', typeKey: 'sprayer', marque: 'Amazone UX5200', assigne: 'Parcelle B2', localisation: 'Rabat', maintenance: '2024-04-20', statut: 'Actif' },
+    { id: 3, nom: 'Case IH Axial-Flow', typeKey: 'harvester', marque: 'Case IH Axial-Flow', assigne: 'Parcelle C3', localisation: 'Fès', maintenance: '2024-03-10', statut: 'Attention' },
+    { id: 4, nom: 'Netafim Drip Pro', typeKey: 'drip_system', marque: 'Netafim Drip Pro', assigne: 'Parcelle A1', localisation: 'Casablanca', maintenance: '2024-04-25', statut: 'Actif' },
+    { id: 5, nom: 'Kuhn Planter 3', typeKey: 'plow', marque: 'Kuhn Planter 3', assigne: 'Non assigné', localisation: 'Entrepôt', maintenance: '2024-02-05', statut: 'Inactif' },
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,14 @@ const Machines = () => {
   };
 
   const handleSubmit = async (values) => {
-    message.success(editingMachine ? t('common.machineModified') : t('common.machineAdded'));
+    if (editingMachine) {
+      setMachines(machines.map(m => m.id === editingMachine.id ? { ...m, ...values } : m));
+      message.success(t('common.machineModified'));
+    } else {
+      const newMachine = { ...values, id: Date.now() };
+      setMachines([...machines, newMachine]);
+      message.success(t('common.machineAdded'));
+    }
     setModalVisible(false);
   };
 
@@ -77,17 +85,18 @@ const Machines = () => {
       title: t('common.name'),
       dataIndex: 'nom',
       key: 'nom',
-      render: (text) => (
+      render: (text, record) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <TruckOutlined style={{ color: '#4a7c59' }} />
-          <span style={{ fontWeight: 500 }}>{text}</span>
+          <span style={{ fontWeight: 500 }}>{`${t(`machines.${record.typeKey}`)} – ${text}`}</span>
         </div>
       ),
     },
     {
       title: t('common.type'),
-      dataIndex: 'type',
+      dataIndex: 'typeKey',
       key: 'type',
+      render: (typeKey) => t(`machines.${typeKey}`),
     },
     {
       title: t('common.brandModel'),
@@ -108,6 +117,7 @@ const Machines = () => {
       title: t('common.lastMaintenance'),
       dataIndex: 'maintenance',
       key: 'maintenance',
+      render: (date) => formatDate(date, i18n.language),
     },
     {
       title: t('common.status'),
@@ -121,14 +131,16 @@ const Machines = () => {
       fixed: 'right',
       width: 100,
       render: (_unused, record) => (
-        <Space size="small">
+        <Space size="small" orientation="horizontal">
           <Button 
             type="text" 
             icon={<EditOutlined style={{ color: '#2385bb' }} />}
+            onClick={() => handleEdit(record)}
           />
           <Button 
             type="text" 
             icon={<DeleteOutlined style={{ color: '#c43a31' }} />}
+            onClick={() => handleDelete(record.id)}
           />
         </Space>
       ),
@@ -235,6 +247,81 @@ const Machines = () => {
           }}
         />
       </Card>
+
+      <Modal
+        title={editingMachine ? t('common.editMachine') : t('common.newMachine')}
+        open={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onOk={() => form.submit()}
+        okText={editingMachine ? t('common.save') : t('common.add')}
+        width={600}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            name="nom"
+            label={t('common.name')}
+            rules={[{ required: true, message: 'Please enter machine name' }]}
+          >
+            <Input placeholder="Enter machine name" />
+          </Form.Item>
+          <Form.Item
+            name="typeKey"
+            label={t('common.type')}
+            rules={[{ required: true, message: 'Please select type' }]}
+          >
+            <Select placeholder="Select type">
+              <Option value="tractor">{t('machines.tractor')}</Option>
+              <Option value="sprayer">{t('machines.sprayer')}</Option>
+              <Option value="harvester">{t('machines.harvester')}</Option>
+              <Option value="drip_system">{t('machines.drip_system')}</Option>
+              <Option value="plow">{t('machines.plow')}</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="marque"
+            label={t('common.brandModel')}
+            rules={[{ required: true, message: 'Please enter brand/model' }]}
+          >
+            <Input placeholder="Enter brand/model" />
+          </Form.Item>
+          <Form.Item
+            name="assigne"
+            label={t('common.assignedTo')}
+            rules={[{ required: true, message: 'Please enter assigned to' }]}
+          >
+            <Input placeholder="Enter assigned to" />
+          </Form.Item>
+          <Form.Item
+            name="localisation"
+            label={t('common.location')}
+            rules={[{ required: true, message: 'Please enter location' }]}
+          >
+            <Input placeholder="Enter location" />
+          </Form.Item>
+          <Form.Item
+            name="maintenance"
+            label={t('common.lastMaintenance')}
+            rules={[{ required: true, message: 'Please select maintenance date' }]}
+          >
+            <Input placeholder="YYYY-MM-DD" />
+          </Form.Item>
+          <Form.Item
+            name="statut"
+            label={t('common.status')}
+            rules={[{ required: true, message: 'Please select status' }]}
+          >
+            <Select placeholder="Select status">
+              <Option value="Actif">{t('common.active')}</Option>
+              <Option value="Attention">{t('common.attention')}</Option>
+              <Option value="Inactif">{t('common.inactive')}</Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

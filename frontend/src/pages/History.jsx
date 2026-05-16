@@ -2,33 +2,34 @@ import { useState } from 'react';
 import { Table, Card, Typography, Tag } from 'antd';
 import { FileTextOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
+import { formatDate } from '../utils/date';
 
 const { Title, Text, Paragraph } = Typography;
 
 const History = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [historyItems, setHistoryItems] = useState([
-    { id: 1, type: 'Intervention', action: 'Pest Control completed', parcelle: 'Parcelle A-12', date: '14/05/2024 10:30', status: 'Completed' },
-    { id: 2, type: 'Irrigation', action: 'Irrigation cycle started', parcelle: 'Parcelle B-5', date: '14/05/2024 08:00', status: 'Active' },
-    { id: 3, type: 'Report', action: 'Monthly report generated', parcelle: 'All', date: '13/05/2024 17:45', status: 'Completed' },
-    { id: 4, type: 'Machine', action: 'Tractor maintenance completed', parcelle: 'Tractor T-03', date: '13/05/2024 14:20', status: 'Completed' },
-    { id: 5, type: 'Intervention', action: 'Fertilization assigned', parcelle: 'Parcelle C-8', date: '12/05/2024 09:15', status: 'In Progress' },
+    { id: 1, typeKey: 'intervention', actionKey: 'pest_control_completed', parcelle: 'Parcelle A-12', date: '2024-05-14', statusKey: 'completed' },
+    { id: 2, typeKey: 'irrigation', actionKey: 'irrigation_cycle_started', parcelle: 'Parcelle B-5', date: '2024-05-14', statusKey: 'active' },
+    { id: 3, typeKey: 'report', actionKey: 'monthly_report_generated', parcelle: 'All', date: '2024-05-13', statusKey: 'completed' },
+    { id: 4, typeKey: 'machine', actionKey: 'tractor_maintenance_completed', parcelle: 'Tractor T-03', date: '2024-05-13', statusKey: 'completed' },
+    { id: 5, typeKey: 'intervention', actionKey: 'fertilization_assigned', parcelle: 'Parcelle C-8', date: '2024-05-12', statusKey: 'inProgress' },
   ]);
 
-  const getStatusTag = (status) => {
+  const getStatusTag = (statusKey) => {
     const colors = {
-      'Completed': '#d1fae5',
-      'Active': '#dbeafe',
-      'In Progress': '#fff7ed'
+      'completed': '#d1fae5',
+      'active': '#dbeafe',
+      'inProgress': '#fff7ed'
     };
     const textColors = {
-      'Completed': '#059669',
-      'Active': '#2563eb',
-      'In Progress': '#ea580c'
+      'completed': '#059669',
+      'active': '#2563eb',
+      'inProgress': '#ea580c'
     };
     return (
-      <Tag color={colors[status]} style={{ border: 'none' }}>
-        <span style={{ color: textColors[status], fontWeight: 500 }}>{status}</span>
+      <Tag color={colors[statusKey]} style={{ border: 'none' }}>
+        <span style={{ color: textColors[statusKey], fontWeight: 500 }}>{t(`common.${statusKey}`)}</span>
       </Tag>
     );
   };
@@ -36,14 +37,15 @@ const History = () => {
   const columns = [
     {
       title: t('common.type'),
-      dataIndex: 'type',
+      dataIndex: 'typeKey',
       key: 'type',
+      render: (typeKey) => t(`historyTypes.${typeKey}`),
     },
     {
       title: t('common.action'),
-      dataIndex: 'action',
+      dataIndex: 'actionKey',
       key: 'action',
-      render: (text) => <Text style={{ fontWeight: 500 }}>{text}</Text>
+      render: (actionKey) => <Text style={{ fontWeight: 500 }}>{t(`historyActions.${actionKey}`)}</Text>
     },
     {
       title: t('common.parcelleMachine'),
@@ -54,11 +56,11 @@ const History = () => {
       title: t('common.date'),
       dataIndex: 'date',
       key: 'date',
-      render: (text) => <Text type="secondary">{text}</Text>
+      render: (date) => <Text type="secondary">{formatDate(date, i18n.language)}</Text>
     },
     {
       title: t('common.status'),
-      dataIndex: 'status',
+      dataIndex: 'statusKey',
       key: 'status',
       render: getStatusTag
     }
